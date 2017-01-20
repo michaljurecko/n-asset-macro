@@ -1,0 +1,62 @@
+language: php
+php:
+    - 5.6
+    - 7.0
+    - 7.1
+
+matrix:
+    include:
+        - php: 5.6
+          env: dependencies="--prefer-lowest --prefer-stable"
+        - php: 7.0
+          env: dependencies="--prefer-lowest --prefer-stable"
+        - php: 7.0
+          env: coverage=on coding_standard=on
+
+script:
+    # Tests
+    - vendor/bin/tester tests -s -c tests/php-unix.ini $coverageArgs
+    # Nette Code Checker
+    - >
+      if [ "$coding_standard" == "on" ]; then
+      php temp/code-checker/src/code-checker.php --short-arrays;
+      fi
+    # Nette Codding Standards
+    - >
+      if [ "$coding_standard" == "on" ]; then
+      vendor/bin/phpcs --standard=vendor/zenify/coding-standard/src/ZenifyCodingStandard/ruleset.xml --encoding=utf-8 -n -p src;
+      fi
+
+after_failure:
+    # Print *.actual content
+    - for i in $(find tests -name \*.actual); do echo "--- $i"; cat $i; echo; echo; done
+
+before_script:
+    # Remove zenify/coding-standard (it not support PHP 5.6)
+    - >
+      if [ "$coding_standard" != "on" ]; then
+      travis_retry composer remove zenify/coding-standard --dev --no-interaction;
+      fi
+    # Install dependencies
+    - travis_retry composer update --no-interaction --prefer-dist $dependencies
+    # Install CodeChecker
+    - >
+      if [ "$coding_standard" == "on" ]; then
+      travis_retry composer create-project nette/code-checker temp/code-checker ~2.5 --no-interaction;
+      fi
+    # Code coverage arguments
+    - if [ "$coverage" == "on" ]; then coverageArgs="-p phpdbg --coverage ./coverage.xml --coverage-src ./src"; fi
+
+after_script:
+    # Report Code Coverage
+    - >
+      if [ "$coverage" == "on" ]; then
+      wget https://scrutinizer-ci.com/ocular.phar;
+      php ocular.phar code-coverage:upload --format=php-clover coverage.xml;
+      fi
+
+sudo: false
+
+cache:
+    directories:
+        - $HOME/.composer/cache

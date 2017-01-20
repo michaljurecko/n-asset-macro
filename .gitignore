@@ -1,0 +1,5 @@
+/vendor/
+/tests/tmp
+/composer.lock
+*.actual
+*.expected

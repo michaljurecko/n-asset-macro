@@ -1,0 +1,19 @@
+php:
+	date.timezone: Europe/Bratislava
+
+application:
+	scanDirs: false
+
+
+http:
+	frames: null
+
+
+session:
+	autoStart: false
+	save_path: %tempDir%/sessions
+
+
+services:
+	cacheStorage:
+		class: Nette\Caching\Storages\MemoryStorage
