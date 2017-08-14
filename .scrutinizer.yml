@@ -1,0 +1,12 @@
+checks:
+    php:
+        code_rating: true
+
+filter:
+    excluded_paths:
+        - 'tests/*'
+        - 'examples/*'
+
+tools:
+    external_code_coverage:
+        timeout: 1000

@@ -1,0 +1,33 @@
+{
+  "name": "n-asset-macro-gulp-example",
+  "main": "gulpfile.babel.js",
+  "devDependencies": {
+    "babel-preset-env": "^1.6.0",
+    "babel-register": "^6.24.1",
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-rev": "^8.0.0",
+    "gulp-rev-format": "^1.0.4",
+    "gulp-sass": "^3.1.0",
+    "gulp-sourcemaps": "^2.6.0",
+    "run-sequence": "^2.0.0",
+    "stream-semaphore": "^1.0.0"
+  },
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "browsers": [
+              "last 2 versions",
+              "> 2%"
+            ]
+          }
+        }
+      ]
+    ]
+  }
+}

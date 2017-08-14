@@ -1,0 +1,18 @@
+$brandColor: #3484D2;
+
+body {
+  margin-top: 20px;
+}
+
+h1 {
+  color: $brandColor;
+}
+
+a[href^="#error:"] {
+  background: red;
+  color: white;
+}
+
+form .required label {
+  font-weight: bold;
+}

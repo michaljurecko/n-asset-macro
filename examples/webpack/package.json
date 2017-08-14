@@ -1,0 +1,31 @@
+{
+  "name": "n-asset-macro-webpack-example",
+  "main": "webpack.config.js",
+  "devDependencies": {
+    "babel-loader": "^7.1.1",
+    "babel-preset-env": "^1.6.0",
+    "babel-register": "^6.24.1",
+    "clean-webpack-plugin": "^0.1.16",
+    "css-loader": "^0.28.4",
+    "extract-text-webpack-plugin": "^3.0.0",
+    "node-sass": "^4.5.3",
+    "sass-loader": "^6.0.6",
+    "webpack": "^3.3.0",
+    "webpack-manifest-plugin": "^1.2.1"
+  },
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "browsers": [
+              "last 2 versions",
+              "> 2%"
+            ]
+          }
+        }
+      ]
+    ]
+  }
+}

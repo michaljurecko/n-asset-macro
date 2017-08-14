@@ -1,0 +1,7 @@
+/vendor/
+/tests/tmp
+/composer.lock
+/coverage.xml
+*.actual
+*.expected
+*.log

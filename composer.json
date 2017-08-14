@@ -1,0 +1,28 @@
+{
+	"name": "webrouse/n-asset-macro",
+	"license": "MIT",
+	"description": "Asset macro for Latte and Nette Framework useful for assets cache busting (with gulp, webpack, grunt, etc.)",
+	"type": "library",
+	"authors": [
+		{
+			"name": "Michal Jurečko",
+			"email": "michal.jurecko@gmail.com"
+		}
+	],
+	"require": {
+		"php": ">=5.6",
+		"latte/latte": ">=2.4",
+		"nette/di": ">=2.3",
+		"nette/utils": ">=2.3"
+	},
+	"require-dev": {
+		"nette/tester": "^2.0",
+		"nette/nette": ">=2.3"
+	},
+	"autoload": {
+		"psr-0": {
+			"Webrouse": "src"
+		}
+	},
+	"minimum-stability": "dev"
+}

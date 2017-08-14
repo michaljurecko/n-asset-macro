@@ -1,0 +1,9 @@
+/log/*
+/temp/*
+/vendor/*
+/node_modules/*
+/www/dist/*
+!.gitignore
+!.htaccess
+!web.config
+/composer.lock
