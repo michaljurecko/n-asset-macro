@@ -10,6 +10,14 @@ Asset macro for [Latte](https://latte.nette.org) and [Nette Framework](https://n
 Useful for assets [cache busting](https://www.keycdn.com/support/what-is-cache-busting)
 with [gulp](https://github.com/webrouse/n-asset-macro/tree/master/examples/gulp "Gulp example"), [webpack](https://github.com/webrouse/n-asset-macro/tree/master/examples/webpack "Webpack example"), [grunt](https://github.com/webrouse/n-asset-macro/tree/master/examples/grunt "Grunt example") and other similar tools.
 
+## Requirements
+
+* [PHP](https://php.net) >=5.6
+* [Nette](https://github.com/nette) >=2.3
+* [Latte](https://github.com/nette/latte) >=2.4
+
+`PHP 7.1` and `Nette 3` are fully supported and tested.
+
 ## Installation
 
 The best way to install **webrouse/n-asset-macro** is using  [Composer](http://getcomposer.org/):
