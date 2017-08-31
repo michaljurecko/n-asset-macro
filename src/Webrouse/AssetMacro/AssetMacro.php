@@ -18,6 +18,7 @@ class AssetMacro extends MacroSet
 
 	const CONFIG_PROVIDER = 'assetMacroConfig';
 
+	private static $manifestCache = [];
 
 	/**
 	 * @param Latte\Compiler $compiler
@@ -202,7 +203,7 @@ class AssetMacro extends MacroSet
 			foreach ($autodetectPaths as $path) {
 				$path = $dir . DIRECTORY_SEPARATOR . $path;
 				if (file_exists($path)) {
-					return Json::decode(file_get_contents($path), Json::FORCE_ARRAY);
+					return self::getManifest($path);
 				}
 			}
 
@@ -215,6 +216,18 @@ class AssetMacro extends MacroSet
 			$need
 		);
 		return NULL;
+	}
+
+	/**
+	 * Get manifest content and cache it
+	 * @param string $path
+	 * @return array
+	 */
+	private static function getManifest($path) {
+		if (!isset(self::$manifestCache[$path])) {
+			self::$manifestCache[$path] = Json::decode(file_get_contents($path), Json::FORCE_ARRAY);
+		}
+		return self::$manifestCache[$path];
 	}
 
 
