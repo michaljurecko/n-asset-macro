@@ -39,8 +39,8 @@
 	},
 	"repositories": [
 		{
-			"type": "vcs",
-			"url": "https://github.com/webrouse/n-asset-macro"
+			"type": "path",
+			"url": "../../"
 		}
 	],
 	"minimum-stability": "dev"
