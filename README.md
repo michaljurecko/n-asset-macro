@@ -79,7 +79,7 @@ assetMacro:
 
 Revision manifest may contains asset version or the asset path. Both ways are supported.
 
-### Revision manifest with asset paths
+### Method 1: asset version in file name
 
 With this method, the files have a **different name at each change**. 
 
@@ -96,7 +96,7 @@ Example revision manifest:
 
 With the example manifest, the expr. `{asset "js/app.js"}` generates: `/base/path/js/app.234a81ab33.js`.
 
-### Revision manifest with asset versions
+### Method 2: asset version as a query string
 
 This approach looks better at first glance. The **asset path is still the same**, and only the parameter in the query changes.
 
