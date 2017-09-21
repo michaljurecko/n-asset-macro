@@ -12,7 +12,7 @@ In this file, you'll find instructions [how to run this example](#example) or [h
 
 ## Example
 
-Examples are [automatically tested](https://github.com/webrouse/n-asset-macro/blob/master/tests/ExamplesTests/grunt_tests.sh) and there are attempt to keep them up-to-date. 
+Examples are [automatically tested](https://github.com/webrouse/n-asset-macro/blob/master/tests/ExamplesTests/grunt_tests.sh) and there is an attempt to keep them up-to-date. 
 
 In case of problems or suggestions, create an [issue](https://github.com/webrouse/n-asset-macro/issues).
 
