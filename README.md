@@ -41,7 +41,7 @@ Macro can by used in any presenter or control template:
 <script src="{asset resources/main.js}"></script>
 ```
 
-Asset macro prepend path with ```$basePath``` and load revision from the [revision manifest](#revision-manifest):
+It prepends path with ```$basePath``` and load revision from the [revision manifest](#revision-manifest):
 
 ```html
 <script src="/base/path/resources/vendor.d78da025b7.js"></script>
