@@ -2,7 +2,6 @@
 
 namespace Webrouse\AssetMacro;
 
-use Latte;
 use Tester\TestCase;
 use Tester\Assert;
 

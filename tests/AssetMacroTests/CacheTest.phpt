@@ -2,15 +2,12 @@
 
 namespace Webrouse\AssetMacro;
 
+use Mockery;
 use Nette;
-use Nette\Bridges\ApplicationLatte\ILatteFactory;
-use Tester;
 use Tester\TestCase;
 use Tester\Assert;
 
 include '../bootstrap.php';
-
-use Mockery;
 
 class CacheTest extends TestCase
 {

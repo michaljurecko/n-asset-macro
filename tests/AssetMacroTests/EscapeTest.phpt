@@ -2,9 +2,6 @@
 
 namespace Webrouse\AssetMacro;
 
-use Nette;
-use Nette\Bridges\ApplicationLatte\ILatteFactory;
-use Tester;
 use Tester\TestCase;
 use Tester\Assert;
 
