@@ -17,7 +17,7 @@ class Extension extends CompilerExtension
 	 * @var array
 	 */
 	public $defaults = [
-		// Cache output
+		// Cache generated output
 		'cache' => '!%debugMode%',
 		// Public www dir
 		'wwwDir' => '%wwwDir%',
