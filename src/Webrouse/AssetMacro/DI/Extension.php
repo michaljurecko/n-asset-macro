@@ -32,7 +32,7 @@ class Extension extends CompilerExtension
 		// Error handling (exception, notice, or ignore)
 		'missingAsset' => 'notice',
 		'missingManifest' => 'notice',
-		'missingRevision' => 'ignore',
+		'missingRevision' => 'notice',
 	];
 
 

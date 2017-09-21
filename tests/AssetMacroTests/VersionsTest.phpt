@@ -38,30 +38,6 @@ class VersionsTest extends TestCase {
 		);
 	}
 
-    /**
-     * Test if asset macro escapes parh correctly
-     */
-    public function testEscape() {
-        $latte = TestUtils::createLatte();
-        $latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-            'autodetect' => [],
-            'wwwDir' => WWW_FIXTURES_DIR,
-            'missingAsset' => 'notice',
-            'missingManifest' => 'notice',
-            'missingRevision' => 'ignore',
-        ]);
-
-        $template = '<script src="{asset "assets/compiled/escape.js"}"></script>';
-
-        Assert::same(
-            '<script src="/base/path/assets/compiled/escape.js?v=&quot;escape&quot;"></script>',
-            $latte->renderToString($template, [
-                'basePath' => '/base/path'
-            ])
-        );
-    }
-
 	/**
 	 * Test asset macro if first argument has invalid type
 	 * @throws \Nette\Utils\AssertionException
@@ -213,6 +189,29 @@ class VersionsTest extends TestCase {
 		]);
 	}
 
+
+    /**
+     * Test asset macro format: %content%
+     */
+    public function testFormatContent() {
+        $latte = TestUtils::createLatte();
+        $latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
+            'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
+            'autodetect' => [],
+            'wwwDir' => WWW_FIXTURES_DIR,
+            'missingAsset' => 'exception',
+            'missingManifest' => 'exception',
+            'missingRevision' => 'exception',
+        ]);
+
+        $template = '{asset "assets/compiled/main.js", "%content%"}';
+        Assert::same(
+            'main',
+            $latte->renderToString($template, [
+                'basePath' => '/base/path'
+            ])
+        );
+    }
 
 	/**
 	 * Test asset macro format: %url%
