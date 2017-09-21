@@ -18,6 +18,7 @@ class EscapeTest extends TestCase
     public function testEscapePath() {
         $latte = TestUtils::createLatte();
         $latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
+            'cache' => false,
             'manifest' => [
                 'assets/compiled/escape.js' => '"quotes"',
             ],
@@ -43,6 +44,7 @@ class EscapeTest extends TestCase
     public function testNoescapePath() {
         $latte = TestUtils::createLatte();
         $latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
+            'cache' => false,
             'manifest' => [
                 'assets/compiled/escape.js' => '"quotes"',
             ],
@@ -68,6 +70,7 @@ class EscapeTest extends TestCase
     public function testEscapeContent() {
         $latte = TestUtils::createLatte();
         $latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
+            'cache' => false,
             'manifest' => [
                 'assets/compiled/escape.js' => '"quotes"',
             ],
@@ -93,6 +96,7 @@ class EscapeTest extends TestCase
     public function testNoescapeContent() {
         $latte = TestUtils::createLatte();
         $latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
+            'cache' => false,
             'manifest' => [
                 'assets/compiled/escape.js' => '"quotes"',
             ],

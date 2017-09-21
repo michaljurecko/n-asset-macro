@@ -19,6 +19,8 @@ class ExtensionTest extends TestCase
 		$container = $this->createContainer("
 extensions:
 	assetMacro: Webrouse\\AssetMacro\\DI\\Extension
+assetMacro:
+	cache: false
 		");
 
 		$wwwDir = $container->parameters['wwwDir'];
@@ -69,6 +71,7 @@ extensions:
 extensions:
 	assetMacro: Webrouse\\AssetMacro\\DI\\Extension
 assetMacro:
+	cache: false
 	manifest: $manifest
 		");
 
@@ -93,6 +96,7 @@ assetMacro:
 extensions:
 	assetMacro: Webrouse\\AssetMacro\\DI\\Extension
 assetMacro:
+	cache: false
 	manifest:
 		'assets/compiled/main.js': 8c48f58dfc7330c89c42550963c81546
 		'assets/compiled/main.css': e9724c7164e33949129b964af7382dfa
@@ -124,6 +128,7 @@ assetMacro:
 extensions:
 	assetMacro: Webrouse\\AssetMacro\\DI\\Extension
 assetMacro:
+	cache: false
 	missingAsset: abc
 		");
 	}
@@ -150,6 +155,7 @@ assetMacro:
 extensions:
 	assetMacro: Webrouse\\AssetMacro\\DI\\Extension
 assetMacro:
+	cache: false
 	missingRevision: abc
 		");
 	}
