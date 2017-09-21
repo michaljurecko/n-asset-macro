@@ -166,7 +166,9 @@ Generated output:
 ```
 ## Caching
 
-In production mode is macro output cached in [global cache storage](https://doc.nette.org/en/2.4/caching). It can be changed in the [configuration](https://github.com/webrouse/n-asset-macro/blob/master/README.md#configuration) using `cache` key (`true` or `false`).
+In production mode is the macro output cached using [global cache storage](https://doc.nette.org/en/2.4/caching). 
+
+It can be changed in the [configuration](https://github.com/webrouse/n-asset-macro/blob/master/README.md#configuration) using `cache` key (`true` or `false`).
 
 ## Configuration
 
