@@ -26,7 +26,7 @@ The best way to install **webrouse/n-asset-macro** is using  [Composer](http://g
 $ composer require webrouse/n-asset-macro
 ```
 
-Then register the extension in configuration:
+Then register the extension in the config file:
 ```yaml
 # app/config/config.neon
 extensions:
