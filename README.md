@@ -117,13 +117,15 @@ With the example manifest, the expr. `{asset "js/app.js"}` generates: `/base/pat
 
 Asset macro automatically detects which of these two formats of revision manifest is used.
 
-## Optional arguments
+## Macro arguments
 
 ### `format`
 
 The format is defined by the second macro parameter or using the `format` key (default `%url%`).
 
 `format` can be used with `needed => false` to hide whole asset expression (eg. `<link ...`) in case of an error.
+
+**You can also use it to include asset content instead of a path.**
 
 | Placeholder  | Example output                                                            |
 | -------------|---------------------------------------------------------------------------|
