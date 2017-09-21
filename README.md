@@ -50,52 +50,6 @@ Asset macro prepend path with ```$basePath``` and load revision from the [revisi
 
 See the [examples](#examples) for usage with [gulp](https://github.com/webrouse/n-asset-macro/tree/master/examples/gulp "Gulp example"), [webpack](https://github.com/webrouse/n-asset-macro/tree/master/examples/webpack "Webpack example"), [grunt](https://github.com/webrouse/n-asset-macro/tree/master/examples/grunt "Grunt example").
 
-### Optional arguments
-
-#### `format`
-
-The format is defined by the second macro parameter or using the `format` key (default `%url%`).
-
-`format` can be used with `needed => false` to hide whole asset expression (eg. `<link ...`) in case of an error.
-
-| Placeholder  | Example output                                                            |
-| -------------|---------------------------------------------------------------------------|
-| `%content%`  | `<svg>....</svg>` (file content)                                            |
-| `%url%`      | `/base/path/js/main.js?v=8c48f58df` or `/base/path/js/main.8c48f58df.js`  |
-| `%path%`     | `js/main.js` or `js/main.8c48f58df.js`                                    |
-| `%raw%`      | `8c48f58df` or `js/main.8c48f58df.js`                                     |
-| `%basePath%` | `/base/path`                                                              |
-
-```latte
-{* app/presenters/templates/@layout.latte *}
-{asset 'js/vendor.js', '<script src="%url%"></script>'}
-<script src="{asset 'js/livereload.js', format => '%path%?host=localhost&v=%raw%'}"></script>
-```
-
-#### `needed`
-
-Error handling can be set using the [configuration keys](https://github.com/webrouse/n-asset-macro/blob/master/README.md#configuration): `missingAsset`, `missingManifest`, `missingRevision`.
-
-It can be mutted by third macro parameter or key `needed` (default `true`).
-
-Argument `needed => false` will cause the missing file or the missing revision record will be ignored.
-
-Empty string will be result for missing asset. Missing version will be replaced with `unknown` string.
-
-**Example of `needed` parameter**
- * `absent.js` file doesn't exist.
- * `missing_rev.js` exists but doesn't have revision in manifest (or the manifest has not been found).
-
-```latte
-{asset 'js/absent.js', '<script src="%url%"></script>', FALSE}
-{asset 'js/missing_rev.js', format => '<script src="%url%"></script>', needed => FALSE}
-```
-
-Generated output:
-```html
-<script src="/base/path/js/missing_rev.js?v=unknown"></script>
-```
-
 ## Revision manifest
 
 **Revision manifest is a JSON file that contains the revision (path or version) of asset.**
@@ -163,6 +117,55 @@ With the example manifest, the expr. `{asset "js/app.js"}` generates: `/base/pat
 
 Asset macro automatically detects which of these two formats of revision manifest is used.
 
+## Optional arguments
+
+### `format`
+
+The format is defined by the second macro parameter or using the `format` key (default `%url%`).
+
+`format` can be used with `needed => false` to hide whole asset expression (eg. `<link ...`) in case of an error.
+
+| Placeholder  | Example output                                                            |
+| -------------|---------------------------------------------------------------------------|
+| `%content%`  | `<svg>....</svg>` (file content)                                            |
+| `%url%`      | `/base/path/js/main.js?v=8c48f58df` or `/base/path/js/main.8c48f58df.js`  |
+| `%path%`     | `js/main.js` or `js/main.8c48f58df.js`                                    |
+| `%raw%`      | `8c48f58df` or `js/main.8c48f58df.js`                                     |
+| `%basePath%` | `/base/path`                                                              |
+
+```latte
+{* app/presenters/templates/@layout.latte *}
+{asset 'js/vendor.js', '<script src="%url%"></script>'}
+<script src="{asset 'js/livereload.js', format => '%path%?host=localhost&v=%raw%'}"></script>
+```
+
+### `needed`
+
+Error handling is set in the [configuration](https://github.com/webrouse/n-asset-macro/blob/master/README.md#configuration) using: `missingAsset`, `missingManifest`, `missingRevision` keys.
+
+These settings can by overrided by third macro parameter or using `needed` key (default `true`).
+
+Argument `needed => false` will cause the missing file or the missing revision record will be ignored.
+
+Empty string will be result for missing asset. Missing version will be replaced with `unknown` string.
+
+**Example of `needed` parameter**
+ * `absent.js` file doesn't exist.
+ * `missing_rev.js` exists but doesn't have revision in manifest (or the manifest has not been found).
+
+```latte
+{asset 'js/absent.js', '<script src="%url%"></script>', FALSE}
+{asset 'js/missing_rev.js', format => '<script src="%url%"></script>', needed => FALSE}
+```
+
+Generated output:
+```html
+<script src="/base/path/js/missing_rev.js?v=unknown"></script>
+```
+## Caching
+
+In production mode is macro output cached in [global cache storage](https://doc.nette.org/en/2.4/caching). It can be changed in the [configuration](https://github.com/webrouse/n-asset-macro/blob/master/README.md#configuration) using `cache` key (`true` or `false`).
+
 ## Configuration
 
 Default configuration, which usually doesn't need to be changed:
@@ -188,18 +191,6 @@ assetMacro:
     missingManifest: notice
     # Action if missing asset revision in manifest: exception, notice, or ignore
     missingRevision: notice
-```
-
-## Caching
-
-If you don't want to load the revision manifest in the production mode, you can use the `cache` macro:
-
-```latte
-{cache "scripts-$locale", if => ! \Tracy\Debugger::isEnabled()}
-<script src="{asset 'js/vendor.js'}" defer></script>
-<script src="{asset "js/locales/$locale.js"}" defer></script>
-<script src="{asset 'js/main.js'}" defer></script>
-{/cache}
 ```
 
 ## Examples
