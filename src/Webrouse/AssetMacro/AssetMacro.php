@@ -143,7 +143,7 @@ class AssetMacro extends MacroSet
 
 	/**
 	 * @param string $relativePath  Relative asset path
-	 * @param string $needed        Fail if manifest doesn't exist?
+	 * @param bool $needed          Fail if manifest doesn't exist?
 	 * @param array $config         Macro configuration
 	 * @return array
 	 */
@@ -166,9 +166,7 @@ class AssetMacro extends MacroSet
 		$isVersion = $revision === null || !Strings::match($revision, '/[.\/]/');
 
 		// Check if asset exists
-		$filePath = $isVersion ?
-			($wwwDir . DIRECTORY_SEPARATOR . $relativePath) :
-			($wwwDir . DIRECTORY_SEPARATOR . Utils::normalizePath($revision));
+		$filePath = $wwwDir . DIRECTORY_SEPARATOR . ($isVersion ? $relativePath : Utils::normalizePath($revision));
 
 		return [$revision, $isVersion, $filePath];
 	}
@@ -260,7 +258,7 @@ class AssetMacro extends MacroSet
 
 		return Strings::replace($format,
 			'/%([^%]+)%/',
-			function ($matches) use ($format, $absolutePath, $relativePath, $basePath, $revision, $revisionIsVersion) {
+			function($matches) use ($format, $absolutePath, $relativePath, $basePath, $revision, $revisionIsVersion) {
 				switch ($matches[1]) {
 					case 'content':
 						return trim(file_get_contents($absolutePath));
