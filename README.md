@@ -50,30 +50,29 @@ Asset macro prepend path with ```$basePath``` and load revision from the [revisi
 
 See the [examples](#examples) for usage with [gulp](https://github.com/webrouse/n-asset-macro/tree/master/examples/gulp "Gulp example"), [webpack](https://github.com/webrouse/n-asset-macro/tree/master/examples/webpack "Webpack example"), [grunt](https://github.com/webrouse/n-asset-macro/tree/master/examples/grunt "Grunt example").
 
-## Configuration
+### Arguments
 
-Default configuration, which usually doesn't need to be changed:
+#### `format`
 
-```yaml
-# app/config/config.neon
-assetMacro:
-    # Path to revision manifest or asset => revision pairs,
-    # if set, the autodetection is switched off
-    revManifest: null # %wwwDir%/assets.json
-    # File names for automatic detection of revision manifest
-    autodetect:
-        - assets.json
-        - busters.json
-        - versions.json
-        - manifest.json
-        - rev-manifest.json
-    # Action if missing asset file: exception, notice, or ignore
-    missingAsset: notice
-    # Action if missing manifest file: exception, notice, or ignore
-    missingManifest: notice
-    # Action if missing asset revision in manifest: exception, notice, or ignore
-    missingRevision: notice
+The format is defined by the second macro parameter or using the `format` key.
+
+Default value is `%url%`.
+
+| Placeholder  | Example output                                                            |
+| -------------|---------------------------------------------------------------------------|
+| `%content%`  | `<svg>....</svg>` (file content)                                            |
+| `%url%`      | `/base/path/js/main.js?v=8c48f58df` or `/base/path/js/main.8c48f58df.js`  |
+| `%path%`     | `js/main.js` or `js/main.8c48f58df.js`                                    |
+| `%raw%`      | `8c48f58df` or `js/main.8c48f58df.js`                                     |
+| `%basePath%` | `/base/path`                                                              |
+
+```latte
+{* app/presenters/templates/@layout.latte *}
+{asset 'js/vendor.js', '<script src="%url%"></script>'}
+<script src="{asset 'js/livereload.js', format => '%path%?host=localhost&v=%raw%'}"></script>
 ```
+
+
 ## Revision manifest
 
 **Revision manifest is a JSON file that contains the revision (path or version) of asset.**
@@ -141,23 +140,34 @@ With the example manifest, the expr. `{asset "js/app.js"}` generates: `/base/pat
 
 Asset macro automatically detects which of these two formats of revision manifest is used.
 
-## Custom format
+## Configuration
 
-It is possible to specify the custom format using placeholders:
+Default configuration, which usually doesn't need to be changed:
 
-| Placeholder  | Example output                                                            |
-| -------------|---------------------------------------------------------------------------|
-| `%url%`      | `/base/path/js/main.js?v=8c48f58df` or `/base/path/js/main.8c48f58df.js`  |
-| `%path%`     | `js/main.js` or `js/main.8c48f58df.js`                                    |
-| `%raw%`      | `8c48f58df` or `js/main.8c48f58df.js`                                     |
-| `%basePath%` | `/base/path`                                                              |
-
-The format is defined by the second macro parameter or using the `format` key.
-```latte
-{* app/presenters/templates/@layout.latte *}
-{asset 'js/vendor.js', '<script src="%url%"></script>'}
-<script src="{asset 'js/livereload.js', format => '%path%?host=localhost&v=%raw%'}"></script>
+```yaml
+# app/config/config.neon
+assetMacro:
+    # Cache generated output
+    cache: ! %debugMode%
+    # Path to revision manifest or asset => revision pairs,
+    # if set, the autodetection is switched off
+    revManifest: null # %wwwDir%/assets.json
+    # File names for automatic detection of revision manifest
+    autodetect:
+        - assets.json
+        - busters.json
+        - versions.json
+        - manifest.json
+        - rev-manifest.json
+    # Action if missing asset file: exception, notice, or ignore
+    missingAsset: notice
+    # Action if missing manifest file: exception, notice, or ignore
+    missingManifest: notice
+    # Action if missing asset revision in manifest: exception, notice, or ignore
+    missingRevision: notice
 ```
+
+
 
 ## Error handling
 
