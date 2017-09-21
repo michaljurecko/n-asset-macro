@@ -143,7 +143,7 @@ The format is defined by the second macro parameter or using the `format` key (d
 
 ### `needed`
 
-Error handling is set in the [configuration](https://github.com/webrouse/n-asset-macro/blob/master/README.md#configuration) using: `missingAsset`, `missingManifest`, `missingRevision` keys.
+Error handling is set in the [configuration](https://github.com/webrouse/n-asset-macro/blob/master/README.md#configuration) using: `missingAsset`, `missingManifest` and`missingRevision` keys.
 
 These settings can by overrided by third macro parameter or using `needed` key (default `true`).
 
