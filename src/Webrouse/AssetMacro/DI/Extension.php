@@ -17,6 +17,8 @@ class Extension extends CompilerExtension
 	 * @var array
 	 */
 	public $defaults = [
+		// Cache generated output
+		'cache' => '!%debugMode%',
 		// Public www dir
 		'wwwDir' => '%wwwDir%',
 		// Assets revision manifest
@@ -32,7 +34,7 @@ class Extension extends CompilerExtension
 		// Error handling (exception, notice, or ignore)
 		'missingAsset' => 'notice',
 		'missingManifest' => 'notice',
-		'missingRevision' => 'ignore',
+		'missingRevision' => 'notice',
 	];
 
 

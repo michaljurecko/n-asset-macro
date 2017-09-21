@@ -18,6 +18,7 @@ class ManifestTest extends TestCase {
 	public function testAutodetectManifest() {
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
+            'cache' => false,
 			'manifest' => NULL,
 			'autodetect' => [
 				'versions-manifest.json',
@@ -44,6 +45,7 @@ class ManifestTest extends TestCase {
 	public function testAutodetectMissingManifestException() {
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
+            'cache' => false,
 			'manifest' => NULL,
 			'autodetect' => [
 				'X.json',
@@ -66,6 +68,7 @@ class ManifestTest extends TestCase {
 	public function testAutodetectMissingManifestIgnore() {
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
+            'cache' => false,
 			'manifest' => NULL,
 			'autodetect' => [
 				'X.json',

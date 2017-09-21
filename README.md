@@ -72,7 +72,7 @@ assetMacro:
     # Action if missing manifest file: exception, notice, or ignore
     missingManifest: notice
     # Action if missing asset revision in manifest: exception, notice, or ignore
-    missingRevision: ignore
+    missingRevision: notice
 ```
 ## Revision manifest
 
