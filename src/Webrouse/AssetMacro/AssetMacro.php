@@ -9,6 +9,7 @@ use Nette\Caching\IStorage;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
 use Nette\Utils\Validators;
+use Tracy\Debugger;
 use Webrouse\AssetMacro\Exceptions\AssetNotFoundException;
 use Webrouse\AssetMacro\Exceptions\RevisionNotFound;
 use Webrouse\AssetMacro\Exceptions\InvalidVariableException;
@@ -62,7 +63,7 @@ class AssetMacro extends MacroSet
 
 		return $writer->write(
 			'echo ' . ($node->modifiers !== '|noescape' ? '%escape' : '') .
-			'(' . self::class . '::generateOutput(' .
+			'(' . self::class . '::getOutput(' .
 			'%node.word, ' .
 			'%node.array, ' .
 			'$basePath, ' .
