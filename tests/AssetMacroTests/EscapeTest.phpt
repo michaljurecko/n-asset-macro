@@ -112,6 +112,26 @@ class EscapeTest extends TestCase
             ])
         );
     }
+
+    /**
+     * Test invalid identifier
+     * @throws \Latte\CompileException
+     */
+    public function testInvalidIdentifier() {
+        $latte = TestUtils::createLatte();
+        $latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
+            'cache' => false,
+            'manifest' => [],
+            'autodetect' => [],
+            'wwwDir' => WWW_FIXTURES_DIR,
+            'missingAsset' => 'exception',
+            'missingManifest' => 'exception',
+            'missingRevision' => 'exception',
+        ]);
+
+        $template = '{asset "assets/compiled/main.js"|invalid}';
+        $latte->renderToString($template, ['basePath' => '/base/path']);
+    }
 }
 
 (new EscapeTest())->run();
