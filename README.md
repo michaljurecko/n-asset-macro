@@ -178,7 +178,7 @@ Default configuration, which usually doesn't need to be changed:
 # app/config/config.neon
 assetMacro:
     # Cache generated output
-    cache: ! %debugMode%
+    cache: %productionMode%
     # Path to revision manifest or asset => revision pairs,
     # if set, the autodetection is switched off
     revManifest: null # %wwwDir%/assets.json

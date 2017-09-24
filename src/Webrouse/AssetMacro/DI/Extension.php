@@ -18,7 +18,7 @@ class Extension extends CompilerExtension
 	 */
 	public $defaults = [
 		// Cache generated output
-		'cache' => '!%debugMode%',
+		'cache' => '%productionMode%',
 		// Public www dir
 		'wwwDir' => '%wwwDir%',
 		// Assets revision manifest
