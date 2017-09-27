@@ -79,7 +79,7 @@ assetMacro:
 
 Revision manifest may contains asset version or the asset path. Both ways are supported.
 
-### Method 1: asset version in file name
+### Method 1: asset version in file name (preferable)
 
 With this method, the files have a **different name at each change**. 
 
