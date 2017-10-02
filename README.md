@@ -4,6 +4,7 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/webrouse/n-asset-macro/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/webrouse/n-asset-macro/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/webrouse/n-asset-macro/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/webrouse/n-asset-macro/?branch=master)
 [![Latest stable](https://img.shields.io/packagist/v/webrouse/n-asset-macro.svg)](https://packagist.org/packages/webrouse/n-asset-macro)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZT44VCJ4QEAF4)
 
 Asset macro for [Latte](https://latte.nette.org) and [Nette Framework](https://nette.org).
 
