@@ -65,7 +65,7 @@ Expected file names: `assets.json`, `busters.json`, `versions.json`, `manifest.j
 ```yaml
 # app/config/config.neon
 assetMacro:
-    revManifest: %wwwDir%/assets.json
+    manifest: %wwwDir%/assets.json
 ```
 
 **Or you can specify `asset => revision` pairs in config file:**
@@ -73,7 +73,7 @@ assetMacro:
 ```yaml
 # app/config/config.neon
 assetMacro:
-    revManifest:
+    manifest:
       'js/vendor.js': 16016edc74d  # or js/vendor.16016edc74d.js
       'js/main.js':  4b82916016    # or js/main.4b82916016.js
 ```
@@ -182,7 +182,7 @@ assetMacro:
     cache: %productionMode%
     # Path to revision manifest or asset => revision pairs,
     # if set, the autodetection is switched off
-    revManifest: null # %wwwDir%/assets.json
+    manifest: null # %wwwDir%/assets.json
     # File names for automatic detection of revision manifest
     autodetect:
         - assets.json
