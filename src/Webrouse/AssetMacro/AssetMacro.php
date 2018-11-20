@@ -165,6 +165,9 @@ class AssetMacro extends MacroSet
 		// Is revision only version (query parameter) or full path to asset?
 		$isVersion = $revision === null || !Strings::match($revision, '/[.\/]/');
 
+		// Strip optional leading / from asset path
+		$revision = ltrim($revision, '/');
+
 		// Check if asset exists
 		$filePath = $wwwDir . DIRECTORY_SEPARATOR . ($isVersion ? $relativePath : Utils::normalizePath($revision));
 
