@@ -1,25 +1,28 @@
 <?php
+declare(strict_types=1);
 
 namespace Webrouse\AssetMacro;
 
-use Tester\TestCase;
 use Tester\Assert;
+use Tester\TestCase;
 
 include '../bootstrap.php';
 
 /**
  * @testCase
  */
-class ManifestTest extends TestCase {
+class ManifestTest extends TestCase
+{
 
 	/**
 	 * Test autodetect of revision manifest
 	 */
-	public function testAutodetectManifest() {
+	public function testAutodetectManifest()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
-			'manifest' => NULL,
+			'cache' => false,
+			'manifest' => null,
 			'autodetect' => [
 				'versions-manifest.json',
 			],
@@ -33,20 +36,22 @@ class ManifestTest extends TestCase {
 		Assert::same(
 			'/base/path/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546',
 			$latte->renderToString($template, [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			])
 		);
 	}
+
 
 	/**
 	 * Test missing manifest in autodetection
 	 * @throws \Webrouse\AssetMacro\Exceptions\ManifestNotFoundException
 	 */
-	public function testAutodetectMissingManifestException() {
+	public function testAutodetectMissingManifestException()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
-			'manifest' => NULL,
+			'cache' => false,
+			'manifest' => null,
 			'autodetect' => [
 				'X.json',
 			],
@@ -58,18 +63,20 @@ class ManifestTest extends TestCase {
 
 		$template = '{asset "assets/compiled/main.js"}';
 		$latte->renderToString($template, [
-			'basePath' => '/base/path'
+			'basePath' => '/base/path',
 		]);
 	}
+
 
 	/**
 	 * Test missing manifest in autodetection
 	 */
-	public function testAutodetectMissingManifestIgnore() {
+	public function testAutodetectMissingManifestIgnore()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
-			'manifest' => NULL,
+			'cache' => false,
+			'manifest' => null,
 			'autodetect' => [
 				'X.json',
 			],
@@ -80,9 +87,9 @@ class ManifestTest extends TestCase {
 		]);
 
 		$template = '{asset "assets/compiled/main.js"}';
-		Assert::error(function() use ($latte, $template) {
+		Assert::error(function () use ($latte, $template) {
 			$latte->renderToString($template, [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			]);
 		}, E_USER_NOTICE);
 
@@ -90,7 +97,7 @@ class ManifestTest extends TestCase {
 		Assert::equal(
 			'/base/path/assets/compiled/main.js?v=unknown',
 			$latte->renderToString($template, [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			])
 		);
 	}

@@ -16,14 +16,25 @@
 		"nette/utils": ">=2.3"
 	},
 	"require-dev": {
-		"nette/tester": "^2.0",
-		"nette/nette": ">=2.3",
-		"mockery/mockery": "^0.9.9"
+		"nette/application": ">=2.3",
+		"nette/caching": ">=2.3",
+		"nette/utils": "3.0.x-dev as 2.5.x-dev",
+		"nette/tester": ">=2.0",
+		"mockery/mockery": "^0.9.9",
+		"nette/coding-standard": ">=2.0",
+		"phpstan/phpstan-nette": ">=0.9"
 	},
 	"autoload": {
 		"psr-0": {
 			"Webrouse": "src"
 		}
 	},
-	"minimum-stability": "dev"
+	"minimum-stability": "dev",
+	"prefer-stable": false,
+	"scripts": {
+		"test": "vendor/bin/tester tests -s -c tests/php-unix.ini",
+		"check-cs": "vendor/bin/ecs check --ansi --no-progress-bar --config coding-standard.yml src tests",
+		"fix-cs": "vendor/bin/ecs check --ansi --no-progress-bar --config coding-standard.yml src tests --fix",
+		"phpstan": "vendor/phpstan/phpstan/bin/phpstan analyse --no-progress --ansi --level 6 --configuration phpstan.neon src tests"
+	}
 }

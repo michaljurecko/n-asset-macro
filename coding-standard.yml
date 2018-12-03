@@ -1,0 +1,2 @@
+imports:
+  - { resource: 'vendor/nette/coding-standard/coding-standard-php71.yml' }

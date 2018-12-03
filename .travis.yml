@@ -25,6 +25,15 @@ script:
       if [ "$coding_standard" == "on" ]; then
         php temp/code-checker/src/code-checker.php --short-arrays -d src;
       fi
+    # Coding standards
+    - >
+      if [ "$coding_standard" == "on" ]; then
+        composer phpstan;
+      fi
+    - >
+      if [ "$coding_standard" == "on" ]; then
+        composer check-cs;
+      fi
     # Examples - tests
     - bash shunit2 tests/ExamplesTests/gulp_tests.sh
     - bash shunit2 tests/ExamplesTests/grunt_tests.sh
