@@ -6,7 +6,7 @@ php:
 matrix:
     include:
         - php: 7.1
-          env: composerArgs="--prefer-lowest --prefer-stable"
+          env: composer_args="--prefer-lowest --prefer-stable" old_nette_utils=on
         - php: 7.2
           env: coverage=on coding_standard=on
 
@@ -48,12 +48,17 @@ after_failure:
     - for i in $(find examples -name \*.log); do echo "--- $i"; cat $i; echo; echo; done
 
 before_script:
-    # Install composerArgs
-    - travis_retry composer update --no-interaction --prefer-dist $composerArgs
+    # Install old nette/utils if required
+    - >
+      if [ "$old_nette_utils" == "on" ]; then
+        travis_retry composer require nette/utils:2.5
+      fi
+    # Install composer_args
+    - travis_retry composer update --no-interaction --prefer-dist $composer_args
     # Install CodeChecker
     - >
       if [ "$coding_standard" == "on" ]; then
-      travis_retry composer create-project nette/code-checker temp/code-checker ~2.5 --no-interaction;
+       travis_retry composer create-project nette/code-checker temp/code-checker ~2.5 --no-interaction;
       fi
     # Install jq 1.5
     - mkdir -p "$HOME/bin"
@@ -64,7 +69,7 @@ before_script:
     - nvm install node
     - npm install -g npm@3
     - npm config set loglevel error
-    - npm install -s -q -g gulp grunt-cli webpack npm-check-updates
+    - npm install -s -q -g gulp grunt-cli webpack webpack-cli npm-check-updates
     # Code coverage arguments
     - if [ "$coverage" == "on" ]; then coverageArgs="-p phpdbg --coverage ./coverage.xml --coverage-src ./src"; fi
 

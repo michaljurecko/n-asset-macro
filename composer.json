@@ -12,12 +12,12 @@
 	"require": {
 		"php": ">=7.1",
 		"latte/latte": ">=2.4",
-		"nette/di": ">=2.3",
-		"nette/utils": ">=2.3"
+		"nette/di": ">=2.4",
+		"nette/utils": ">=2.4"
 	},
 	"require-dev": {
-		"nette/application": ">=2.3",
-		"nette/caching": ">=2.3",
+		"nette/application": ">=2.4",
+		"nette/caching": ">=2.4",
 		"nette/utils": "3.0.x-dev as 2.5.x-dev",
 		"nette/tester": ">=2.0",
 		"mockery/mockery": "^0.9.9",
