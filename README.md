@@ -13,11 +13,11 @@ with [gulp](https://github.com/webrouse/n-asset-macro/tree/master/examples/gulp 
 
 ## Requirements
 
-* [PHP](https://php.net) >=5.6
+* [PHP](https://php.net) >=7.1 (version `v1.2.1` as the last one supports `PHP 5.6`)
 * [Nette](https://github.com/nette) >=2.3
 * [Latte](https://github.com/nette/latte) >=2.4
 
-`PHP 7.1` and `Nette 3` are fully supported and tested.
+`Nette 3` is fully supported and tested.
 
 ## Installation
 

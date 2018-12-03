@@ -3,7 +3,7 @@
 namespace Webrouse\AssetMacro\Exceptions;
 
 
-class UnexpectedValueException extends \InvalidArgumentException
+class UnexpectedValueException extends AssetMacroException
 {
 
 }

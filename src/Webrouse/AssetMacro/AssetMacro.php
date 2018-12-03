@@ -6,9 +6,11 @@ use Latte;
 use Latte\Macros\MacroSet;
 use Nette\Caching\Cache;
 use Nette\Caching\IStorage;
+use Nette\Utils\AssertionException;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
 use Nette\Utils\Validators;
+use Webrouse\AssetMacro\Exceptions\AssetMacroException;
 use Webrouse\AssetMacro\Exceptions\AssetNotFoundException;
 use Webrouse\AssetMacro\Exceptions\RevisionNotFound;
 use Webrouse\AssetMacro\Exceptions\InvalidVariableException;
@@ -76,6 +78,8 @@ class AssetMacro extends MacroSet
 	 * @param string $basePath   Base path
 	 * @param array $config      Macro configuration
 	 * @param IStorage $storage  Cache storage
+     * @throws AssertionException
+     * @throws \Nette\Utils\JsonException
 	 * @return string
 	 */
 	public static function getOutput($asset, array $args, $basePath, array $config, IStorage $storage = null)
@@ -102,6 +106,8 @@ class AssetMacro extends MacroSet
 	 * @param array $args       Other macro arguments
 	 * @param string $basePath  Base path
 	 * @param array $config     Macro configuration
+     * @throws AssertionException
+     * @throws \Nette\Utils\JsonException
 	 * @return string
 	 */
 	public static function generateOutput($asset, array $args, $basePath, array $config)
@@ -125,6 +131,7 @@ class AssetMacro extends MacroSet
 	/**
 	 * @param string $asset  Asset path specified in macro
 	 * @param array $args    Macro arguments
+     * @throws AssertionException
 	 * @return array
 	 */
 	private static function processArguments($asset, array $args)
@@ -145,6 +152,8 @@ class AssetMacro extends MacroSet
 	 * @param string $relativePath  Relative asset path
 	 * @param bool $needed          Fail if manifest doesn't exist?
 	 * @param array $config         Macro configuration
+     * @throws AssetMacroException
+     * @throws \Nette\Utils\JsonException
 	 * @return array
 	 */
 	private static function getRevision($relativePath, $needed, array $config)
@@ -175,13 +184,15 @@ class AssetMacro extends MacroSet
 	}
 
 
-	/**
-	 * @param string $asset   Asset path specified in macro
-	 * @param bool $needed    Fail if manifest doesn't exist?
-	 * @param string $wwwDir  Public www dir
-	 * @param array $config   Macro configuration
-	 * @return null|array
-	 */
+    /**
+     * @param string $asset Asset path specified in macro
+     * @param bool $needed Fail if manifest doesn't exist?
+     * @param string $wwwDir Public www dir
+     * @param array $config Macro configuration
+     * @throws AssetMacroException
+     * @throws \Nette\Utils\JsonException
+     * @return null|array
+     */
 	private static function getManifest($asset, $needed, $wwwDir, array $config)
 	{
 		$manifest = $config['manifest'];
@@ -209,13 +220,15 @@ class AssetMacro extends MacroSet
 	}
 
 
-	/**
-	 * @param string $asset   Asset path specified in macro
-	 * @param string $wwwDir  Public www dir
-	 * @param bool $needed    Fail if asset/manifest doesn't exist?
-	 * @param array $config   Macro configuration
-	 * @return null|array
-	 */
+    /**
+     * @param string $asset Asset path specified in macro
+     * @param string $wwwDir Public www dir
+     * @param bool $needed Fail if asset/manifest doesn't exist?
+     * @param array $config Macro configuration
+     * @throws AssetMacroException
+     * @throws \Nette\Utils\JsonException
+     * @return null|array
+     */
 	private static function autodetectManifest($asset, $wwwDir, $needed, array $config)
 	{
 		// Finding a manifest begins in the asset directory

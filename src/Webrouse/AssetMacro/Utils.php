@@ -3,6 +3,7 @@
 namespace Webrouse\AssetMacro;
 
 use Nette\Utils\Strings;
+use Webrouse\AssetMacro\Exceptions\AssetMacroException;
 use Webrouse\AssetMacro\Exceptions\InvalidPathException;
 
 
@@ -40,14 +41,14 @@ class Utils
 	}
 
 
-	/**
-	 * Throw exception, trigger error or ignore according of action
-	 * @param \Exception $e
-	 * @param string $action
-	 * @param bool $need
-	 * @throws \Exception
-	 */
-	public static function throwError(\Exception $e, $action = 'exception', $need = TRUE)
+    /**
+     * Throw exception, trigger error or ignore according of action
+     * @param \Exception $e
+     * @param string $action
+     * @param bool $need
+     * @throws AssetMacroException
+     */
+	public static function throwError(AssetMacroException $e, $action = 'exception', $need = TRUE)
 	{
 		if ($need) {
 			if ($action === 'exception') {

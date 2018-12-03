@@ -3,7 +3,7 @@
 namespace Webrouse\AssetMacro\Exceptions;
 
 
-class DirNotFoundException extends \RuntimeException
+class DirNotFoundException extends AssetMacroException
 {
 
 }
