@@ -3,7 +3,7 @@
 namespace Webrouse\AssetMacro\Exceptions;
 
 
-class InvalidPathException extends \RuntimeException
+class InvalidPathException extends AssetMacroException
 {
 
 }

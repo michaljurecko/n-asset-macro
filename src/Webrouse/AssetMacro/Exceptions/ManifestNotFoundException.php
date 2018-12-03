@@ -3,7 +3,7 @@
 namespace Webrouse\AssetMacro\Exceptions;
 
 
-class ManifestNotFoundException extends \RuntimeException
+class ManifestNotFoundException extends AssetMacroException
 {
 
 }

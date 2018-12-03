@@ -3,7 +3,7 @@
 namespace Webrouse\AssetMacro\Exceptions;
 
 
-class RevisionNotFound extends \RuntimeException
+class RevisionNotFound extends AssetMacroException
 {
 
 }

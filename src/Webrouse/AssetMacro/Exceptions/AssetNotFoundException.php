@@ -3,7 +3,7 @@
 namespace Webrouse\AssetMacro\Exceptions;
 
 
-class AssetNotFoundException extends \RuntimeException
+class AssetNotFoundException extends AssetMacroException
 {
 
 }

@@ -1,3 +1,4 @@
+/.idea
 /vendor/
 /tests/tmp
 /composer.lock

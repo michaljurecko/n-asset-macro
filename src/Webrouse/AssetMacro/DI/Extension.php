@@ -3,6 +3,7 @@
 namespace Webrouse\AssetMacro\DI;
 
 use Nette\DI\CompilerExtension;
+use Nette\DI\Definitions\FactoryDefinition;
 use Nette\DI\Helpers;
 use Nette\Utils\Validators;
 use Webrouse\AssetMacro\AssetMacro;
@@ -37,7 +38,9 @@ class Extension extends CompilerExtension
 		'missingRevision' => 'notice',
 	];
 
-
+    /**
+     * @throws \Nette\Utils\AssertionException
+     */
 	public function beforeCompile()
 	{
 		$builder = $this->getContainerBuilder();
@@ -53,7 +56,14 @@ class Extension extends CompilerExtension
 		$this->validateChoices('missingRevision', $choices);
 
 		// Setup macro
-		$builder->getDefinition('latte.latteFactory')
+		$latteDefinition = $builder->getDefinition('latte.latteFactory');
+
+		// Compatibility with Nette 3.0
+		if (class_exists(FactoryDefinition::class) && $latteDefinition instanceof FactoryDefinition) {
+            $latteDefinition = $latteDefinition->getResultDefinition();
+        }
+
+		$latteDefinition
 			->addSetup("?->addProvider(?, ?)", ['@self', AssetMacro::CONFIG_PROVIDER, $config])
 			->addSetup("?->onCompile[] = function(\$engine) { " .
 				AssetMacro::class . "::install(\$engine->getCompiler()); }",

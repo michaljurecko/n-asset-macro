@@ -1,16 +1,13 @@
 language: php
 php:
-    - 5.6
-    - 7.0
     - 7.1
+    - 7.2
 
 matrix:
     include:
-        - php: 5.6
-          env: composerArgs="--prefer-lowest --prefer-stable"
         - php: 7.1
           env: composerArgs="--prefer-lowest --prefer-stable"
-        - php: 7.1
+        - php: 7.2
           env: coverage=on coding_standard=on
 
 addons:
@@ -26,7 +23,7 @@ script:
     # Nette Code Checker
     - >
       if [ "$coding_standard" == "on" ]; then
-      php temp/code-checker/src/code-checker.php --short-arrays -d src;
+        php temp/code-checker/src/code-checker.php --short-arrays -d src;
       fi
     # Examples - tests
     - bash shunit2 tests/ExamplesTests/gulp_tests.sh
@@ -66,8 +63,8 @@ after_script:
     # Report Code Coverage
     - >
       if [ "$coverage" == "on" ]; then
-      wget https://scrutinizer-ci.com/ocular.phar;
-      php ocular.phar code-coverage:upload --format=php-clover coverage.xml;
+        wget https://scrutinizer-ci.com/ocular.phar;
+        php ocular.phar code-coverage:upload --format=php-clover coverage.xml;
       fi
 
 cache:

@@ -3,7 +3,7 @@
 namespace Webrouse\AssetMacro\Exceptions;
 
 
-class InvalidVariableException extends \RuntimeException
+class InvalidVariableException extends AssetMacroException
 {
 
 }
