@@ -1,12 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace Webrouse\AssetMacro;
 
 use Nette;
 use Nette\Bridges\ApplicationLatte\ILatteFactory;
 use Tester;
-use Tester\TestCase;
 use Tester\Assert;
+use Tester\TestCase;
 
 include '../bootstrap.php';
 
@@ -15,13 +16,14 @@ class ExtensionTest extends TestCase
 	/**
 	 * Test load asset version from predefined autodetect paths (in all parent dirs)
 	 */
-	public function testExtensionManifestAutodetect() {
-		$container = $this->createContainer("
+	public function testExtensionManifestAutodetect()
+	{
+		$container = $this->createContainer('
 extensions:
 	assetMacro: Webrouse\\AssetMacro\\DI\\Extension
 assetMacro:
 	cache: false
-		");
+		');
 
 		$wwwDir = $container->parameters['wwwDir'];
 		$this->createFile($wwwDir . '/assets/compiled/main.js');
@@ -44,7 +46,7 @@ assetMacro:
 			'rev-manifest.json',
 		];
 
-		foreach($paths as $path) {
+		foreach ($paths as $path) {
 			$path = $wwwDir . '/' . $path;
 			$this->createFile($path, '{"assets/compiled/main.js": "8c48f58dfc7330c89c42550963c81546"}');
 
@@ -54,17 +56,19 @@ assetMacro:
 			$latte = $latteFactory->create();
 			Assert::same("/base/path/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546\n",
 				$latte->renderToString(FIXTURES_DIR . '/template1.latte', [
-					'basePath' => '/base/path'
+					'basePath' => '/base/path',
 				]));
 
 			unlink($path);
 		}
 	}
 
+
 	/**
 	 * Test load asset version from file defined in configuration
 	 */
-	public function testExtensionManifestFile() {
+	public function testExtensionManifestFile()
+	{
 		$manifest = FIXTURES_DIR . '/www/versions-manifest.json';
 
 		$container = $this->createContainer("
@@ -84,14 +88,16 @@ assetMacro:
 		$latte = $latteFactory->create();
 		Assert::same("/base/path/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546\n",
 			$latte->renderToString(FIXTURES_DIR . '/template1.latte', [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 		]));
 	}
+
 
 	/**
 	 * Test load asset version from array defined in configuration
 	 */
-	public function testExtensionManifestArray() {
+	public function testExtensionManifestArray()
+	{
 		$container = $this->createContainer("
 extensions:
 	assetMacro: Webrouse\\AssetMacro\\DI\\Extension
@@ -111,54 +117,61 @@ assetMacro:
 		$latte = $latteFactory->create();
 		Assert::same("/base/path/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546\n",
 			$latte->renderToString(FIXTURES_DIR . '/template1.latte', [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			]));
 		Assert::same("/base/path/assets/compiled/main.css?v=e9724c7164e33949129b964af7382dfa\n",
 			$latte->renderToString(FIXTURES_DIR . '/template2.latte', [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			]));
 	}
+
 
 	/**
 	 * Test invalid value in missingAsset config key
 	 * @throws \Webrouse\AssetMacro\Exceptions\UnexpectedValueException
 	 */
-	public function testExtensionInvalidMissingAsset() {
-		$this->createContainer("
+	public function testExtensionInvalidMissingAsset()
+	{
+		$this->createContainer('
 extensions:
 	assetMacro: Webrouse\\AssetMacro\\DI\\Extension
 assetMacro:
 	cache: false
 	missingAsset: abc
-		");
+		');
 	}
+
 
 	/**
 	 * Test invalid value in missingManifest config key
 	 * @throws \Webrouse\AssetMacro\Exceptions\UnexpectedValueException
 	 */
-	public function testExtensionInvalidMissingManifest() {
-		$this->createContainer("
+	public function testExtensionInvalidMissingManifest()
+	{
+		$this->createContainer('
 extensions:
 	assetMacro: Webrouse\\AssetMacro\\DI\\Extension
 assetMacro:
 	missingManifest: abc
-		");
+		');
 	}
+
 
 	/**
 	 * Test invalid value in missingRevision config key
 	 * @throws \Webrouse\AssetMacro\Exceptions\UnexpectedValueException
 	 */
-	public function testExtensionInvalidMissingRevision() {
-		$this->createContainer("
+	public function testExtensionInvalidMissingRevision()
+	{
+		$this->createContainer('
 extensions:
 	assetMacro: Webrouse\\AssetMacro\\DI\\Extension
 assetMacro:
 	cache: false
 	missingRevision: abc
-		");
+		');
 	}
+
 
 	/**
 	 * @param string $configContent
@@ -168,11 +181,11 @@ assetMacro:
 	{
 		$hash = md5(TEMP_DIR . '_' . $configContent . '_' . Nette\Utils\Random::generate(10));
 		$tempDir = TEMP_DIR . '/container_' . $hash;
-		@mkdir($tempDir, 0777, TRUE);
+		@mkdir($tempDir, 0777, true);
 		$appDir = $tempDir . '/app';
-		@mkdir($appDir, 0777, TRUE);
+		@mkdir($appDir, 0777, true);
 		$wwwDir = $tempDir . '/www';
-		@mkdir($wwwDir, 0777, TRUE);
+		@mkdir($wwwDir, 0777, true);
 		$config = new Nette\Configurator();
 		$config->setTempDirectory($tempDir);
 		$config->addParameters(['container' => ['class' => 'SystemContainer_' . $hash]]);
@@ -182,17 +195,18 @@ assetMacro:
 		return $config->createContainer();
 	}
 
+
 	/**
 	 * @param string $content
 	 * @param string $path
 	 */
-	private function createFile($path, $content = 'content') {
-		@mkdir(dirname($path), 0777, TRUE);
+	private function createFile($path, $content = 'content')
+	{
+		@mkdir(dirname($path), 0777, true);
 		file_put_contents(
 			$path,
 			$content
 		);
-
 	}
 }
 

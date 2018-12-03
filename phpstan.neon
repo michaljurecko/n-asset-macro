@@ -1,0 +1,31 @@
+parameters:
+	autoload_directories:
+		- %rootDir%/../../../src
+		- %rootDir%/../../../tests
+	universalObjectCratesClasses:
+		- stdClass
+		- Nette\Application\UI\ITemplate
+		- Nette\Http\SessionSection
+		- Nette\Utils\ArrayHash
+		- Nette\Security\IIdentity
+	earlyTerminatingMethodCalls:
+		Nette\Application\UI\Component:
+			- redirect
+		Nette\Application\UI\Presenter:
+			- redirect
+			- redirectUrl
+			- sendJson
+			- sendResponse
+			- emitFatalError
+		Rekola\Api\BasePresenter:
+			- sendSuccessResponse
+			- sendErrorResponse
+	polluteCatchScopeWithTryAssignments: true
+	ignoreErrors:
+		- '#Constant TEMP_DIR not found#'
+		- '#Call to an undefined method Nette\\DI\\Definitions\\Definition::addSetup\(\).#'
+
+
+includes:
+	- vendor/phpstan/phpstan-nette/extension.neon
+

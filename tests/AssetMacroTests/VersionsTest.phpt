@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace Webrouse\AssetMacro;
 
 use Latte;
-use Tester\TestCase;
 use Tester\Assert;
+use Tester\TestCase;
 
 include '../bootstrap.php';
 
@@ -12,15 +13,17 @@ include '../bootstrap.php';
  * Test asset macro with revision manifest file with format ASSET => VERSION
  * @testCase
  */
-class VersionsTest extends TestCase {
+class VersionsTest extends TestCase
+{
 
 	/**
 	 * Test asset macro render
 	 */
-	public function testRender() {
+	public function testRender()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -34,41 +37,21 @@ class VersionsTest extends TestCase {
 		Assert::same(
 			'/base/path/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546',
 			$latte->renderToString($template, [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			])
 		);
 	}
 
-	/**
-	 * Test asset macro if first argument has invalid type
-	 * @throws \Nette\Utils\AssertionException
-	 */
-	public function testInvalidTypeAssetArgument() {
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'notice',
-		]);
-
-		$template = '{asset 123}';
-		$latte->renderToString($template, [
-			'basePath' => '/base/path'
-		]);
-	}
 
 	/**
 	 * Test asset macro if second argument has invalid type
 	 * @throws \Nette\Utils\AssertionException
 	 */
-	public function testInvalidTypeFormatArgument() {
+	public function testInvalidTypeFormatArgument()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -79,18 +62,20 @@ class VersionsTest extends TestCase {
 
 		$template = '{asset "assets/compiled/main.js", 123}';
 		$latte->renderToString($template, [
-			'basePath' => '/base/path'
+			'basePath' => '/base/path',
 		]);
 	}
+
 
 	/**
 	 * Test asset macro if third argument has invalid type
 	 * @throws \Nette\Utils\AssertionException
 	 */
-	public function testInvalidTypeNeedArgument() {
+	public function testInvalidTypeNeedArgument()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -101,17 +86,19 @@ class VersionsTest extends TestCase {
 
 		$template = '{asset "assets/compiled/main.js", "%url%", 123}';
 		$latte->renderToString($template, [
-			'basePath' => '/base/path'
+			'basePath' => '/base/path',
 		]);
 	}
+
 
 	/**
 	 * Test if macro ignore missing asset if need is FALSE
 	 */
-	public function testMissingAssetNeedArgumentFalse() {
+	public function testMissingAssetNeedArgumentFalse()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -124,18 +111,20 @@ class VersionsTest extends TestCase {
 		Assert::same(
 			'',
 			$latte->renderToString($template, [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			])
 		);
 	}
 
+
 	/**
 	 * Test asset macro with need argument as named parameter
 	 */
-	public function testNeedNamedParameter() {
+	public function testNeedNamedParameter()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -148,19 +137,21 @@ class VersionsTest extends TestCase {
 		Assert::same(
 			'',
 			$latte->renderToString($template, [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			])
 		);
 	}
+
 
 	/**
 	 * Test asset macro without arguments
 	 * @throws Latte\CompileException
 	 */
-	public function testWithoutArguments() {
+	public function testWithoutArguments()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -171,18 +162,20 @@ class VersionsTest extends TestCase {
 
 		$template = '{asset}';
 		$latte->renderToString($template, [
-			'basePath' => '/base/path'
+			'basePath' => '/base/path',
 		]);
 	}
+
 
 	/**
 	 * Test asset macro with too many arguments
 	 * @throws Latte\CompileException
 	 */
-	public function testTooManyArguments() {
+	public function testTooManyArguments()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -193,42 +186,45 @@ class VersionsTest extends TestCase {
 
 		$template = '{asset "a", "b", "c", "d"}';
 		$latte->renderToString($template, [
-			'basePath' => '/base/path'
+			'basePath' => '/base/path',
 		]);
 	}
 
 
-    /**
-     * Test asset macro format: %content%
-     */
-    public function testFormatContent() {
-        $latte = TestUtils::createLatte();
-        $latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
-            'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-            'autodetect' => [],
-            'wwwDir' => WWW_FIXTURES_DIR,
-            'missingAsset' => 'exception',
-            'missingManifest' => 'exception',
-            'missingRevision' => 'exception',
-        ]);
+	/**
+	 * Test asset macro format: %content%
+	 */
+	public function testFormatContent()
+	{
+		$latte = TestUtils::createLatte();
+		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
+			'cache' => false,
+			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
+			'autodetect' => [],
+			'wwwDir' => WWW_FIXTURES_DIR,
+			'missingAsset' => 'exception',
+			'missingManifest' => 'exception',
+			'missingRevision' => 'exception',
+		]);
 
-        $template = '{asset "assets/compiled/main.js", "%content%"}';
-        Assert::same(
-            'main',
-            $latte->renderToString($template, [
-                'basePath' => '/base/path'
-            ])
-        );
-    }
+		$template = '{asset "assets/compiled/main.js", "%content%"}';
+		Assert::same(
+			'main',
+			$latte->renderToString($template, [
+				'basePath' => '/base/path',
+			])
+		);
+	}
+
 
 	/**
 	 * Test asset macro format: %url%
 	 */
-	public function testFormatUrl() {
+	public function testFormatUrl()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -241,18 +237,20 @@ class VersionsTest extends TestCase {
 		Assert::same(
 			'/base/path/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546',
 			$latte->renderToString($template, [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			])
 		);
 	}
 
+
 	/**
 	 * Test asset macro format: %path%
 	 */
-	public function testFormatPath() {
+	public function testFormatPath()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -265,18 +263,20 @@ class VersionsTest extends TestCase {
 		Assert::same(
 			'assets/compiled/main.js',
 			$latte->renderToString($template, [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			])
 		);
 	}
 
+
 	/**
 	 * Test asset macro format: %raw%
 	 */
-	public function testFormatRaw() {
+	public function testFormatRaw()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -289,18 +289,20 @@ class VersionsTest extends TestCase {
 		Assert::same(
 			'8c48f58dfc7330c89c42550963c81546',
 			$latte->renderToString($template, [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			])
 		);
 	}
 
+
 	/**
 	 * Test asset macro format: %basePath%
 	 */
-	public function testFormatBasePath() {
+	public function testFormatBasePath()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -313,7 +315,7 @@ class VersionsTest extends TestCase {
 		Assert::same(
 			'/base/path',
 			$latte->renderToString($template, [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			])
 		);
 	}
@@ -322,10 +324,11 @@ class VersionsTest extends TestCase {
 	/**
 	 * Test asset macro with format parameter as named parameter
 	 */
-	public function testFormatNamedParameter() {
+	public function testFormatNamedParameter()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -338,19 +341,21 @@ class VersionsTest extends TestCase {
 		Assert::same(
 			'8c48f58dfc7330c89c42550963c81546',
 			$latte->renderToString($template, [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			])
 		);
 	}
+
 
 	/**
 	 * Test asset macro format with invalid variable
 	 * @throws \Webrouse\AssetMacro\Exceptions\InvalidVariableException
 	 */
-	public function testFormatInvalidVariable() {
+	public function testFormatInvalidVariable()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -361,17 +366,19 @@ class VersionsTest extends TestCase {
 
 		$template = '{asset "assets/compiled/main.js", "%abc%"}';
 		$latte->renderToString($template, [
-			'basePath' => '/base/path'
+			'basePath' => '/base/path',
 		]);
 	}
+
 
 	/**
 	 * Test asset macro format multiple variables
 	 */
-	public function testFormatMultipleVars() {
+	public function testFormatMultipleVars()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -384,19 +391,21 @@ class VersionsTest extends TestCase {
 		Assert::same(
 			'assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546',
 			$latte->renderToString($template, [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			])
 		);
 	}
+
 
 	/**
 	 * Test if macro throw the exception if revision manifest file not exists
 	 * @throws \Webrouse\AssetMacro\Exceptions\ManifestNotFoundException
 	 */
-	public function testMissingManifestException() {
+	public function testMissingManifestException()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/version_invalid.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -407,17 +416,19 @@ class VersionsTest extends TestCase {
 
 		$template = "{asset 'assets/compiled/main.js'}";
 		$latte->renderToString($template, [
-			'basePath' => '/base/path'
+			'basePath' => '/base/path',
 		]);
 	}
+
 
 	/**
 	 * Test if asset macro generate notice if revision manifest file not exists
 	 */
-	public function testMissingManifestNotice() {
+	public function testMissingManifestNotice()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/version_invalid.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -428,9 +439,9 @@ class VersionsTest extends TestCase {
 
 		$template = "{asset 'assets/compiled/main.js'}";
 
-		Assert::error(function() use($template, $latte) {
+		Assert::error(function () use ($template, $latte) {
 			$latte->renderToString($template, [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			]);
 		}, E_USER_NOTICE);
 
@@ -438,18 +449,20 @@ class VersionsTest extends TestCase {
 		Assert::same(
 			'/base/path/assets/compiled/main.js?v=unknown',
 			$latte->renderToString($template, [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			])
 		);
 	}
 
+
 	/**
 	 * Test if asset macro ignore missing revision manifest file
 	 */
-	public function testMissingManifestIgnore() {
+	public function testMissingManifestIgnore()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/version_invalid.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -463,18 +476,20 @@ class VersionsTest extends TestCase {
 		Assert::same(
 			'/base/path/assets/compiled/main.js?v=unknown',
 			$latte->renderToString($template, [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			])
 		);
 	}
 
+
 	/**
 	 * Test if version is set to 'unknown', if revision not found in manifest
 	 */
-	public function testMissingRevisionIgnore() {
+	public function testMissingRevisionIgnore()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -487,18 +502,20 @@ class VersionsTest extends TestCase {
 		Assert::same(
 			'/base/path/assets/compiled/some.js?v=unknown',
 			$latte->renderToString($template, [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			])
 		);
 	}
 
+
 	/**
 	 * Test if asset macro generate notice if revision not found in manifest
 	 */
-	public function testMissingRevisionNotice() {
+	public function testMissingRevisionNotice()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -509,9 +526,9 @@ class VersionsTest extends TestCase {
 
 		$template = '{asset "assets/compiled/some.js"}';
 
-		Assert::error(function() use($template, $latte) {
+		Assert::error(function () use ($template, $latte) {
 			$latte->renderToString($template, [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			]);
 		}, E_USER_NOTICE);
 
@@ -519,19 +536,21 @@ class VersionsTest extends TestCase {
 		Assert::same(
 			'/base/path/assets/compiled/some.js?v=unknown',
 			$latte->renderToString($template, [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			])
 		);
 	}
+
 
 	/**
 	 * Test if asset macro thrown the exception if revision not found in manifest
 	 * @throws \Webrouse\AssetMacro\Exceptions\RevisionNotFound
 	 */
-	public function testMissingRevisionException() {
+	public function testMissingRevisionException()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -542,18 +561,20 @@ class VersionsTest extends TestCase {
 
 		$template = '{asset "assets/compiled/some.js"}';
 		$latte->renderToString($template, [
-			'basePath' => '/base/path'
+			'basePath' => '/base/path',
 		]);
 	}
+
 
 	/**
 	 * Test if macro throw the exception if www dir not exists
 	 * @throws \Webrouse\AssetMacro\Exceptions\AssetNotFoundException
 	 */
-	public function testWwwDirNotExists() {
+	public function testWwwDirNotExists()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
 			'wwwDir' => '/invalid/www/dir',
@@ -564,18 +585,20 @@ class VersionsTest extends TestCase {
 
 		$template = '{asset "assets/compiled/main.js"}';
 		$latte->renderToString($template, [
-			'basePath' => '/base/path'
+			'basePath' => '/base/path',
 		]);
 	}
+
 
 	/**
 	 * Test if macro throw the exception if asset not exists
 	 * @throws \Webrouse\AssetMacro\Exceptions\AssetNotFoundException
 	 */
-	public function testMissingAssetException() {
+	public function testMissingAssetException()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -586,17 +609,19 @@ class VersionsTest extends TestCase {
 
 		$template = '{asset "assets/compiled/invalid.js"}';
 		$latte->renderToString($template, [
-			'basePath' => '/base/path'
+			'basePath' => '/base/path',
 		]);
 	}
+
 
 	/**
 	 * Test if macro trigger notice if asset not exists
 	 */
-	public function testMissingAssetNotice() {
+	public function testMissingAssetNotice()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -607,9 +632,9 @@ class VersionsTest extends TestCase {
 
 		$template = '{asset "assets/compiled/invalid.js"}';
 
-		Assert::error(function() use($latte, $template) {
+		Assert::error(function () use ($latte, $template) {
 			$latte->renderToString($template, [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			]);
 		}, E_USER_NOTICE);
 
@@ -617,18 +642,20 @@ class VersionsTest extends TestCase {
 		Assert::same(
 			'',
 			$latte->renderToString($template, [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			])
 		);
 	}
 
+
 	/**
 	 * Test if macro ignore if asset not exists
 	 */
-	public function testMissingAssetIgnore() {
+	public function testMissingAssetIgnore()
+	{
 		$latte = TestUtils::createLatte();
 		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-            'cache' => false,
+			'cache' => false,
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
 			'wwwDir' => WWW_FIXTURES_DIR,
@@ -641,7 +668,7 @@ class VersionsTest extends TestCase {
 		Assert::same(
 			'',
 			$latte->renderToString($template, [
-				'basePath' => '/base/path'
+				'basePath' => '/base/path',
 			])
 		);
 	}

@@ -1,10 +1,12 @@
 <?php
+declare(strict_types=1);
 
 namespace Webrouse\AssetMacro\DI;
 
 use Nette\DI\CompilerExtension;
 use Nette\DI\Definitions\FactoryDefinition;
 use Nette\DI\Helpers;
+use Nette\DI\ServiceDefinition;
 use Nette\Utils\Validators;
 use Webrouse\AssetMacro\AssetMacro;
 use Webrouse\AssetMacro\Exceptions\UnexpectedValueException;
@@ -23,7 +25,7 @@ class Extension extends CompilerExtension
 		// Public www dir
 		'wwwDir' => '%wwwDir%',
 		// Assets revision manifest
-		'manifest' => NULL,
+		'manifest' => null,
 		// Paths for manifest autodetection
 		'autodetect' => [
 			'assets.json',
@@ -38,9 +40,10 @@ class Extension extends CompilerExtension
 		'missingRevision' => 'notice',
 	];
 
-    /**
-     * @throws \Nette\Utils\AssertionException
-     */
+
+	/**
+	 * @throws \Nette\Utils\AssertionException
+	 */
 	public function beforeCompile()
 	{
 		$builder = $this->getContainerBuilder();
@@ -60,13 +63,14 @@ class Extension extends CompilerExtension
 
 		// Compatibility with Nette 3.0
 		if (class_exists(FactoryDefinition::class) && $latteDefinition instanceof FactoryDefinition) {
-            $latteDefinition = $latteDefinition->getResultDefinition();
-        }
+			$latteDefinition = $latteDefinition->getResultDefinition();
+		}
 
+		/** @var ServiceDefinition $latteDefinition */
 		$latteDefinition
-			->addSetup("?->addProvider(?, ?)", ['@self', AssetMacro::CONFIG_PROVIDER, $config])
-			->addSetup("?->onCompile[] = function(\$engine) { " .
-				AssetMacro::class . "::install(\$engine->getCompiler()); }",
+			->addSetup('?->addProvider(?, ?)', ['@self', AssetMacro::CONFIG_PROVIDER, $config])
+			->addSetup('?->onCompile[] = function($engine) { ' .
+				AssetMacro::class . '::install($engine->getCompiler()); }',
 				['@self']
 			);
 	}
@@ -78,7 +82,7 @@ class Extension extends CompilerExtension
 	 */
 	private function validateChoices($key, array $choices)
 	{
-		if ( ! in_array($this->config[$key], $choices)) {
+		if (!in_array($this->config[$key], $choices, true)) {
 			throw new UnexpectedValueException(sprintf(
 				"Unexpected value '%s' of '%s' configuration key. Allowed values: %s.",
 				$this->config[$key],
@@ -87,5 +91,4 @@ class Extension extends CompilerExtension
 			));
 		}
 	}
-
 }

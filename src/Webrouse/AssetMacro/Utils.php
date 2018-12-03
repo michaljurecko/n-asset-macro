@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Webrouse\AssetMacro;
 
@@ -9,12 +10,7 @@ use Webrouse\AssetMacro\Exceptions\InvalidPathException;
 
 class Utils
 {
-
-	/**
-	 * @param string $path
-	 * @return string
-	 */
-	public static function normalizePath($path)
+	public static function normalizePath(string $path): string
 	{
 		// Remove any kind of unicode whitespace
 		$normalized = preg_replace('#\p{C}+|^\./#u', '', $path);
@@ -41,14 +37,7 @@ class Utils
 	}
 
 
-    /**
-     * Throw exception, trigger error or ignore according of action
-     * @param \Exception $e
-     * @param string $action
-     * @param bool $need
-     * @throws AssetMacroException
-     */
-	public static function throwError(AssetMacroException $e, $action = 'exception', $need = TRUE)
+	public static function throwError(AssetMacroException $e, $action = 'exception', bool $need = true): void
 	{
 		if ($need) {
 			if ($action === 'exception') {
@@ -59,5 +48,4 @@ class Utils
 			}
 		}
 	}
-
 }
