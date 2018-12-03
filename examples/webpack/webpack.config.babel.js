@@ -1,4 +1,4 @@
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import ManifestPlugin from 'webpack-manifest-plugin';
 import CleanWebpackPlugin from 'clean-webpack-plugin';
 
@@ -33,14 +33,17 @@ module.exports = {
       // SASS
       {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract(['css-loader?sourceMap', 'sass-loader?sourceMap'])
+        use: [
+            MiniCssExtractPlugin.loader,
+            {loader: 'css-loader', options: {sourceMap: true}},
+            {loader: 'sass-loader', options: {sourceMap: true}},
+        ],
       }
     ]
   },
   plugins: [
-    new ExtractTextPlugin({
+    new MiniCssExtractPlugin({
       filename: '[name].[contenthash:8].css',
-      allChunks: true,
     }),
     new ManifestPlugin({
       fileName: `${config.buildDir}/${config.manifest}`,
