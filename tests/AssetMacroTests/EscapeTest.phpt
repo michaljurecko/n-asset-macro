@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Webrouse\AssetMacro;
 
 use Tester\Assert;
-use Tester\TestCase;
 
 include '../bootstrap.php';
 
@@ -31,9 +30,7 @@ class EscapeTest extends TestCase
 		$template = '<tag data-x="{asset "assets/compiled/escape.js"}"></tag>';
 		Assert::same(
 			'<tag data-x="/base/path/assets/compiled/escape.js?v=&quot;quotes&quot;"></tag>',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -59,9 +56,7 @@ class EscapeTest extends TestCase
 		$template = '<tag data-x="{asset "assets/compiled/escape.js"|noescape}"></tag>';
 		Assert::same(
 			'<tag data-x="/base/path/assets/compiled/escape.js?v="quotes""></tag>',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -87,9 +82,7 @@ class EscapeTest extends TestCase
 		$template = '<tag data-x="{asset "assets/compiled/escape.js", "%content%"}"></tag>';
 		Assert::same(
 			'<tag data-x="&quot;quotes content&quot;"></tag>',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -115,9 +108,7 @@ class EscapeTest extends TestCase
 		$template = '<tag data-x="{asset "assets/compiled/escape.js", "%content%"|noescape}"></tag>';
 		Assert::same(
 			'<tag data-x=""quotes content""></tag>',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 

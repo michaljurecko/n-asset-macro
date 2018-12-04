@@ -51,8 +51,8 @@ class AssetMacro extends MacroSet
 		$argsCount = $args === '' ? 0 : (substr_count($args, ',') + 1);
 		if ($argsCount === 0) {
 			throw new Latte\CompileException('Asset macro requires at least one argument.');
-		} elseif ($argsCount > 3) {
-			throw new Latte\CompileException('Asset macro must have no more than 3 arguments.');
+		} elseif ($argsCount > 4) {
+			throw new Latte\CompileException('Asset macro must have no more than 4 arguments.');
 		}
 
 		return $writer->write(
@@ -61,12 +61,13 @@ class AssetMacro extends MacroSet
 			'%node.word, ' .
 			'%node.array, ' .
 			'$basePath, ' .
+			'$baseUrl, ' .
 			'$this->global->' . self::CONFIG_PROVIDER . ', ' .
 			'isset($this->global->cacheStorage) ? $this->global->cacheStorage : null))');
 	}
 
 
-	public static function getOutput(string $asset, array $args, string $basePath, array $config, IStorage $storage = null): string
+	public static function getOutput(string $asset, array $args, string $basePath, string $baseUrl, array $config, IStorage $storage = null): string
 	{
 		$cacheKey = md5(implode(';', [$asset, $basePath, serialize($args), serialize($config)]));
 		$cache = ($config['cache'] && $storage) ? new Cache($storage, 'Webrouse.AssetMacro') : null;
@@ -77,7 +78,7 @@ class AssetMacro extends MacroSet
 		}
 
 		// Generate output and store value to cache
-		$output = self::generateOutput($asset, $args, $basePath, $config);
+		$output = self::generateOutput($asset, $args, $basePath, $baseUrl, $config);
 		if ($cache) {
 			$cache->save($cacheKey, $output);
 		}
@@ -86,9 +87,9 @@ class AssetMacro extends MacroSet
 	}
 
 
-	public static function generateOutput(string $asset, array $args, string $basePath, array $config): string
+	public static function generateOutput(string $asset, array $args, string $basePath, string $baseUrl, array $config): string
 	{
-		[$relativePath, $format, $needed] = self::processArguments($asset, $args);
+		[$relativePath, $format, $needed, $absolute] = self::processArguments($asset, $args);
 		[$revision, $isVersion, $absolutePath] = self::getRevision($relativePath, $needed, $config);
 
 		if (!file_exists($absolutePath)) {
@@ -100,7 +101,7 @@ class AssetMacro extends MacroSet
 			return '';
 		}
 
-		return self::formatOutput($format, $absolutePath, $relativePath, $basePath, $revision, $isVersion);
+		return self::formatOutput($format, $absolutePath, $relativePath, $basePath, $baseUrl, $revision, $absolute, $isVersion);
 	}
 
 
@@ -108,14 +109,23 @@ class AssetMacro extends MacroSet
 	{
 		$format = $args['format'] ?? ($args[0] ?? '%url%');
 		$needed = $args['need'] ?? ($args[1] ?? true);
+		$absolute = $args['absolute'] ?? ($args[2] ?? false);
 
 		Validators::assert($asset, 'string', 'path');
 		Validators::assert($format, 'string', 'format');
 		Validators::assert($needed, 'bool', 'need');
+		Validators::assert($needed, 'bool', 'absolute');
+
+		if (Strings::startsWith($asset, '//')) {
+			$absolute = true;
+		}
+
+		// Strip optional leading /
+		$asset = ltrim($asset, '/');
 
 		$relativePath = Utils::normalizePath($asset);
 
-		return [$relativePath, $format, $needed];
+		return [$relativePath, $format, $needed, $absolute];
 	}
 
 
@@ -135,15 +145,10 @@ class AssetMacro extends MacroSet
 		}
 
 		// Is revision only version (query parameter) or full path to asset?
-		$isVersion = $revision === null || !Strings::match($revision, '/[.\/]/');
+		$isVersion = $revision === null || !Strings::match((string) $revision, '/[.\/]/');
 
-		// Strip optional leading / from asset path
-		$revision = $revision ? ltrim($revision, '/') : null;
-
-		// Check if asset exists
-		$filePath = $wwwDir . DIRECTORY_SEPARATOR . ($isVersion ? $relativePath : Utils::normalizePath($revision));
-
-		return [$revision, $isVersion, $filePath];
+		$absolutePath = $wwwDir . DIRECTORY_SEPARATOR . ($isVersion ? $relativePath : Utils::normalizePath((string) $revision));
+		return [$revision, $isVersion, $absolutePath];
 	}
 
 
@@ -167,11 +172,7 @@ class AssetMacro extends MacroSet
 				return null;
 			}
 
-			try {
-				return Json::decode((string) file_get_contents($manifest), Json::FORCE_ARRAY);
-			} catch (JsonException $e) {
-				throw new ManifestJsonException('Invalid JSON in manifest.', 0, $e);
-			}
+			return self::parseManifest($manifest);
 		}
 
 		// Autodetect manifest path
@@ -191,7 +192,7 @@ class AssetMacro extends MacroSet
 				$path = $dir . DIRECTORY_SEPARATOR . $path;
 				if (file_exists($path)) {
 					if (!isset(self::$manifestCache[$path])) {
-						self::$manifestCache[$path] = Json::decode((string) file_get_contents($path), Json::FORCE_ARRAY);
+						self::$manifestCache[$path] = self::parseManifest($path);
 					}
 					return self::$manifestCache[$path];
 				}
@@ -210,28 +211,53 @@ class AssetMacro extends MacroSet
 	}
 
 
-	private static function formatOutput(string $format, string $absolutePath, string $relativePath, string $basePath, ?string $revision, bool $revisionIsVersion): string
+	private static function parseManifest(string $path): array
 	{
+		try {
+			$raw = Json::decode((string) file_get_contents($path), Json::FORCE_ARRAY);
+		} catch (JsonException $e) {
+			throw new ManifestJsonException('Invalid JSON in manifest.', 0, $e);
+		}
+
+		// Strip optional leading / from source and target path (key and value)
+		$manifest = [];
+		foreach ($raw as $key => $value) {
+			$key = ltrim((string) $key, '/');
+			$value = ltrim((string) $value, '/');
+			$manifest[$key] = $value;
+		}
+
+		return $manifest;
+	}
+
+
+	private static function formatOutput(string $format, string $absolutePath, string $relativePath, string $basePath, string $baseUrl, ?string $revision, bool $absolute, bool $revisionIsVersion): string
+	{
+		$base = $absolute ? $baseUrl : $basePath;
 		$revision = $revision ?: 'unknown';
 		$relativePath = $revisionIsVersion ? $relativePath : $revision;
 
 		return Strings::replace($format,
 			'/%([^%]+)%/',
-			function ($matches) use ($format, $absolutePath, $relativePath, $basePath, $revision, $revisionIsVersion) {
+			function ($matches) use ($format, $absolutePath, $relativePath, $base, $basePath, $baseUrl, $revision, $revisionIsVersion) {
 				switch ($matches[1]) {
 					case 'content':
 						$content = file_get_contents($absolutePath);
 						return $content ? trim($content) : '';
 					case 'raw':
 						return $revision;
+					case 'base':
+						return $base;
 					case 'basePath':
 						return $basePath;
+					case 'baseUrl':
+						return $baseUrl;
 					case 'path':
 						return $relativePath;
 					case 'url':
 						return $revisionIsVersion ?
-							sprintf('%s/%s?v=%s', $basePath, $relativePath, $revision) :
-							sprintf('%s/%s', $basePath, $relativePath);
+							sprintf('%s/%s?v=%s', $base, $relativePath, $revision) :
+							sprintf('%s/%s', $base, $relativePath);
 					default:
 						$msg = sprintf(
 							"Asset macro: Invalid variable '%s' in format '%s'. " .

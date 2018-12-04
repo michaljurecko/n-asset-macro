@@ -6,7 +6,6 @@ namespace Webrouse\AssetMacro;
 use Mockery;
 use Nette;
 use Tester\Assert;
-use Tester\TestCase;
 
 include '../bootstrap.php';
 
@@ -31,9 +30,7 @@ class CacheTest extends TestCase
 		$template = '{asset "assets/compiled/main.js"}';
 		Assert::same(
 			'/base/path/assets/compiled/main.fc730c89c4255.js',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -61,9 +58,7 @@ class CacheTest extends TestCase
 		$template = '{asset "assets/compiled/main.js"}';
 		Assert::same(
 			'/base/path/assets/compiled/main.fc730c89c4255.js',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -100,9 +95,7 @@ class CacheTest extends TestCase
 		$template = '{asset "assets/compiled/main.js"}';
 		Assert::same(
 			'/base/path/assets/compiled/main.fc730c89c4255.js',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -134,17 +127,8 @@ class CacheTest extends TestCase
 		$template = '{asset "assets/compiled/main.js"}';
 		Assert::same(
 			'/base/path/assets/CACHED/main.fc730c89c4255.js',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
-	}
-
-
-	protected function tearDown()
-	{
-		parent::tearDown();
-		Mockery::close();
 	}
 }
 

@@ -21,3 +21,4 @@ register_shutdown_function(function () {
 });
 
 include_once 'TestUtils.php';
+include_once 'TestCase.php';
