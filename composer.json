@@ -17,7 +17,8 @@
 	},
 	"require-dev": {
 		"nette/application": ">=2.4",
-		"nette/caching": ">=2.4",
+		"nette/http": ">=2.4",
+		"nette/caching": ">=2.5",
 		"nette/utils": "3.0.x-dev as 2.5.x-dev",
 		"nette/tester": ">=2.0",
 		"mockery/mockery": "^0.9.9",
