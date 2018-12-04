@@ -29,6 +29,7 @@ class ManifestTest extends TestCase
 			'missingAsset' => 'ignore',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'ignore',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/main.js"}';
@@ -56,6 +57,7 @@ class ManifestTest extends TestCase
 			'missingAsset' => 'ignore',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'ignore',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/main.js"}';
@@ -79,6 +81,7 @@ class ManifestTest extends TestCase
 			'missingAsset' => 'ignore',
 			'missingManifest' => 'notice',
 			'missingRevision' => 'ignore',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/main.js"}';

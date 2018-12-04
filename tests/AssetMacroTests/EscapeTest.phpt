@@ -25,6 +25,7 @@ class EscapeTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '<tag data-x="{asset "assets/compiled/escape.js"}"></tag>';
@@ -51,6 +52,7 @@ class EscapeTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '<tag data-x="{asset "assets/compiled/escape.js"|noescape}"></tag>';
@@ -77,6 +79,7 @@ class EscapeTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '<tag data-x="{asset "assets/compiled/escape.js", "%content%"}"></tag>';
@@ -103,6 +106,7 @@ class EscapeTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '<tag data-x="{asset "assets/compiled/escape.js", "%content%"|noescape}"></tag>';
@@ -128,6 +132,7 @@ class EscapeTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/main.js"|invalid}';

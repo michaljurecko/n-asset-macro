@@ -25,6 +25,7 @@ class CacheTest extends TestCase
 			'missingAsset' => 'notice',
 			'missingManifest' => 'notice',
 			'missingRevision' => 'notice',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/main.js"}';
@@ -49,6 +50,7 @@ class CacheTest extends TestCase
 			'missingAsset' => 'notice',
 			'missingManifest' => 'notice',
 			'missingRevision' => 'notice',
+			'format' => '%url%',
 		]);
 
 		// No method from cache storage could be called
@@ -77,6 +79,7 @@ class CacheTest extends TestCase
 			'missingAsset' => 'notice',
 			'missingManifest' => 'notice',
 			'missingRevision' => 'notice',
+			'format' => '%url%',
 		]);
 
 		$cacheStorage = Mockery::mock(Nette\Caching\IStorage::class);
@@ -114,6 +117,7 @@ class CacheTest extends TestCase
 			'missingAsset' => 'notice',
 			'missingManifest' => 'notice',
 			'missingRevision' => 'notice',
+			'format' => '%url%',
 		]);
 
 		$cacheStorage = Mockery::mock(Nette\Caching\IStorage::class);
