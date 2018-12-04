@@ -51,7 +51,7 @@ before_script:
     # Install old nette/utils if required
     - >
       if [ "$old_nette_utils" == "on" ]; then
-        travis_retry composer require nette/utils:2.5
+        travis_retry composer require nette/utils:2.5 --dev
       fi
     # Install composer_args
     - travis_retry composer update --no-interaction --prefer-dist $composer_args
