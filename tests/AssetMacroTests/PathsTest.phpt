@@ -29,6 +29,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'notice',
 			'missingManifest' => 'notice',
 			'missingRevision' => 'notice',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/main.js"}';
@@ -55,6 +56,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'notice',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/main.js", 123}';
@@ -77,6 +79,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'notice',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/main.js", "%url%", 123}';
@@ -98,6 +101,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/invalid.js", "%url%", false}';
@@ -122,6 +126,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "invalid.js", need => FALSE}';
@@ -147,6 +152,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'ignore',
 			'missingManifest' => 'ignore',
 			'missingRevision' => 'notice',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset}';
@@ -169,10 +175,36 @@ class PathsTest extends TestCase
 			'missingAsset' => 'ignore',
 			'missingManifest' => 'ignore',
 			'missingRevision' => 'notice',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "a", "b", "c", "d", "e"}';
 		$latte->renderToString($template, self::LATTE_VARS);
+	}
+
+
+	/**
+	 * Test asset macro modified default format in config
+	 */
+	public function testDefaultFormat()
+	{
+		$latte = TestUtils::createLatte();
+		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
+			'cache' => false,
+			'manifest' => WWW_FIXTURES_DIR . '/paths-manifest.json',
+			'autodetect' => [],
+			'wwwDir' => WWW_FIXTURES_DIR,
+			'missingAsset' => 'exception',
+			'missingManifest' => 'exception',
+			'missingRevision' => 'exception',
+			'format' => '/prefix%url%',
+		]);
+
+		$template = '{asset "assets/compiled/main.js"}';
+		Assert::same(
+			'/prefix/base/path/assets/compiled/main.fc730c89c4255.js',
+			$latte->renderToString($template, self::LATTE_VARS)
+		);
 	}
 
 
@@ -190,6 +222,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/main.js", "%content%"}';
@@ -214,6 +247,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/main.js", "%url%"}';
@@ -238,6 +272,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/main.js", "%path%"}';
@@ -262,6 +297,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/main.js", "%raw%"}';
@@ -286,6 +322,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/main.js", "%base%"}';
@@ -310,6 +347,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "//assets/compiled/main.js", "%base%"}';
@@ -334,6 +372,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/main.js", "%baseUrl%"}';
@@ -358,6 +397,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/main.js", "%basePath%"}';
@@ -382,6 +422,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/main.js", format => "%raw%"}';
@@ -407,6 +448,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/main.js", "%abc%"}';
@@ -428,6 +470,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/main.js", "%basePath%/%path%"}';
@@ -453,6 +496,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = "{asset 'assets/compiled/main.js'}";
@@ -474,6 +518,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'notice',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = "{asset 'assets/compiled/main.js'}";
@@ -504,6 +549,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'ignore',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = "{asset 'assets/compiled/main.js'}";
@@ -529,6 +575,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'ignore',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/some.js"}';
@@ -553,6 +600,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'notice',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/some.js"}';
@@ -584,6 +632,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/some.js"}';
@@ -606,6 +655,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/main.js"}';
@@ -628,6 +678,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'ignore',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/invalid.js"}';
@@ -649,6 +700,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'notice',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'ignore',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/invalid.js"}';
@@ -679,6 +731,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'ignore',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'ignore',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/invalid.js"}';
@@ -703,6 +756,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "/assets/compiled/other.js"}';
@@ -727,6 +781,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "//assets/compiled/other.js"}';
@@ -751,6 +806,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "/assets/compiled/other.js", absolute => true}';
@@ -775,6 +831,7 @@ class PathsTest extends TestCase
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
+			'format' => '%url%',
 		]);
 
 		$template = '{asset "/assets/compiled/other.js", "%url%", true, true}';

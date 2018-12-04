@@ -38,6 +38,8 @@ class Extension extends CompilerExtension
 		'missingAsset' => 'notice',
 		'missingManifest' => 'notice',
 		'missingRevision' => 'notice',
+		// Default format
+		'format' => '%%url%%',
 	];
 
 
@@ -53,6 +55,7 @@ class Extension extends CompilerExtension
 		Validators::assertField($config, 'wwwDir', 'string');
 		Validators::assertField($config, 'manifest', 'null|string|array');
 		Validators::assertField($config, 'autodetect', 'array');
+		Validators::assertField($config, 'format', 'string');
 		$choices = ['exception', 'notice', 'ignore'];
 		$this->validateChoices('missingAsset', $choices);
 		$this->validateChoices('missingManifest', $choices);

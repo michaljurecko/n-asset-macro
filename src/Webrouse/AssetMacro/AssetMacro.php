@@ -74,7 +74,7 @@ class AssetMacro extends MacroSet
 
 		// Load cached value
 		if ($cache && ($output = $cache->load($cacheKey)) !== null) {
-			return $output;
+			return (string) $output;
 		}
 
 		// Generate output and store value to cache
@@ -89,7 +89,7 @@ class AssetMacro extends MacroSet
 
 	public static function generateOutput(string $asset, array $args, string $basePath, string $baseUrl, array $config): string
 	{
-		[$relativePath, $format, $needed, $absolute] = self::processArguments($asset, $args);
+		[$relativePath, $format, $needed, $absolute] = self::processArguments($asset, $args, $config);
 		[$revision, $isVersion, $absolutePath] = self::getRevision($relativePath, $needed, $config);
 
 		if (!file_exists($absolutePath)) {
@@ -105,9 +105,9 @@ class AssetMacro extends MacroSet
 	}
 
 
-	private static function processArguments(string $asset, array $args): array
+	private static function processArguments(string $asset, array $args, array $config): array
 	{
-		$format = $args['format'] ?? ($args[0] ?? '%url%');
+		$format = $args['format'] ?? ($args[0] ?? $config['format']);
 		$needed = $args['need'] ?? ($args[1] ?? true);
 		$absolute = $args['absolute'] ?? ($args[2] ?? false);
 
