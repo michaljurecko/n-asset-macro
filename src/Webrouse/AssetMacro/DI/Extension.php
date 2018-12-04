@@ -5,11 +5,14 @@ namespace Webrouse\AssetMacro\DI;
 
 use Nette\DI\CompilerExtension;
 use Nette\DI\Definitions\FactoryDefinition;
+use Nette\DI\Definitions\ServiceDefinition;
 use Nette\DI\Helpers;
-use Nette\DI\ServiceDefinition;
 use Nette\Utils\Validators;
 use Webrouse\AssetMacro\AssetMacro;
+use Webrouse\AssetMacro\Config;
 use Webrouse\AssetMacro\Exceptions\UnexpectedValueException;
+use Webrouse\AssetMacro\ManifestService;
+use Webrouse\AssetMacro\Utils;
 
 
 class Extension extends CompilerExtension
@@ -19,14 +22,12 @@ class Extension extends CompilerExtension
 	 * Default configuration
 	 * @var array
 	 */
-	public $defaults = [
+	public const DEFAULTS = [
 		// Cache generated output
 		'cache' => '%productionMode%',
-		// Public www dir
-		'wwwDir' => '%wwwDir%',
 		// Assets revision manifest
 		'manifest' => null,
-		// Paths for manifest autodetection
+		// Paths for manifest auto-detection
 		'autodetect' => [
 			'assets.json',
 			'busters.json',
@@ -34,6 +35,10 @@ class Extension extends CompilerExtension
 			'manifest.json',
 			'rev-manifest.json',
 		],
+		// Absolute path to assets dir
+		'assetsPath' => '%wwwDir%/',
+		// Public path to "assetsPath"
+		'publicPath' => '/',
 		// Error handling (exception, notice, or ignore)
 		'missingAsset' => 'notice',
 		'missingManifest' => 'notice',
@@ -43,23 +48,39 @@ class Extension extends CompilerExtension
 	];
 
 
-	/**
-	 * @throws \Nette\Utils\AssertionException
-	 */
-	public function beforeCompile()
+	public function loadConfiguration()
 	{
 		$builder = $this->getContainerBuilder();
-		$config = Helpers::expand($this->validateConfig($this->defaults), $builder->parameters);
+		$config = Helpers::expand($this->validateConfig(self::DEFAULTS), $builder->parameters);
 
-		// Validate configuration
-		Validators::assertField($config, 'wwwDir', 'string');
+		// Validate types
+		Validators::assertField($config, 'assetsPath', 'string');
+		Validators::assertField($config, 'publicPath', 'string');
 		Validators::assertField($config, 'manifest', 'null|string|array');
 		Validators::assertField($config, 'autodetect', 'array');
 		Validators::assertField($config, 'format', 'string');
-		$choices = ['exception', 'notice', 'ignore'];
-		$this->validateChoices('missingAsset', $choices);
-		$this->validateChoices('missingManifest', $choices);
-		$this->validateChoices('missingRevision', $choices);
+
+		// Validate policies
+		$choices = [Utils::MISSING_POLICY_IGNORE, Utils::MISSING_POLICY_NOTICE, Utils::MISSING_POLICY_EXCEPTION];
+		$this->validatePolicy($config, 'missingAsset', $choices);
+		$this->validatePolicy($config, 'missingManifest', $choices);
+		$this->validatePolicy($config, 'missingRevision', $choices);
+
+		// Config
+		$builder
+			->addDefinition($this->prefix('config'))
+			->setFactory(Config::class, [$config]);
+
+		// Manifest service
+		$builder
+			->addDefinition($this->prefix('manifest'))
+			->setFactory(ManifestService::class, [$this->prefix('@config')]);
+	}
+
+
+	public function beforeCompile()
+	{
+		$builder = $this->getContainerBuilder();
 
 		// Setup macro
 		$latteDefinition = $builder->getDefinition('latte.latteFactory');
@@ -71,7 +92,7 @@ class Extension extends CompilerExtension
 
 		/** @var ServiceDefinition $latteDefinition */
 		$latteDefinition
-			->addSetup('?->addProvider(?, ?)', ['@self', AssetMacro::CONFIG_PROVIDER, $config])
+			->addSetup('?->addProvider(?, ?)', ['@self', AssetMacro::MANIFEST_PROVIDER, $this->prefix('@manifest')])
 			->addSetup('?->onCompile[] = function($engine) { ' .
 				AssetMacro::class . '::install($engine->getCompiler()); }',
 				['@self']
@@ -79,16 +100,12 @@ class Extension extends CompilerExtension
 	}
 
 
-	/**
-	 * @param string $key
-	 * @param array $choices
-	 */
-	private function validateChoices($key, array $choices)
+	private function validatePolicy(array &$config, $key, array $choices): void
 	{
-		if (!in_array($this->config[$key], $choices, true)) {
+		if (!in_array($config[$key], $choices, true)) {
 			throw new UnexpectedValueException(sprintf(
 				"Unexpected value '%s' of '%s' configuration key. Allowed values: %s.",
-				$this->config[$key],
+				$config[$key],
 				$this->prefix($key),
 				implode(', ', $choices)
 			));

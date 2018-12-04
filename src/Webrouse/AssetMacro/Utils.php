@@ -10,6 +10,12 @@ use Webrouse\AssetMacro\Exceptions\InvalidPathException;
 
 class Utils
 {
+	public const
+		MISSING_POLICY_IGNORE = 'ignore',
+		MISSING_POLICY_NOTICE = 'notice',
+		MISSING_POLICY_EXCEPTION = 'exception';
+
+
 	public static function normalizePath(string $path): string
 	{
 		// Remove any kind of unicode whitespace

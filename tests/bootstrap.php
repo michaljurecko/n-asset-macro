@@ -20,5 +20,4 @@ register_shutdown_function(function () {
 	rmdir(TEMP_DIR);
 });
 
-include_once 'TestUtils.php';
 include_once 'TestCase.php';

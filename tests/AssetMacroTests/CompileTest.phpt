@@ -18,19 +18,19 @@ class CompileTest extends TestCase
 	 */
 	public function testCompile()
 	{
-		$latte = TestUtils::createLatte();
+		$latte = $this->createLatte();
 
 		// main.js
 		$template1 = '{asset "assets/compiled/main.js"}';
 		Assert::contains(
-			AssetMacro::class . '::getOutput("assets/compiled/main.js", [], $basePath, $baseUrl, $this->global->' . AssetMacro::CONFIG_PROVIDER . ', isset($this->global->cacheStorage) ? $this->global->cacheStorage : null)',
+			AssetMacro::class . '::getOutput("assets/compiled/main.js", [], $this->global->' . AssetMacro::MANIFEST_PROVIDER . ', $this->global->cacheStorage ?? null)',
 			$latte->compile($template1)
 		);
 
 		// assets/compiled/main.css
 		$template2 = '{asset "assets/compiled/main.css"}';
 		Assert::contains(
-			AssetMacro::class . '::getOutput("assets/compiled/main.css", [], $basePath, $baseUrl, $this->global->' . AssetMacro::CONFIG_PROVIDER . ', isset($this->global->cacheStorage) ? $this->global->cacheStorage : null)',
+			AssetMacro::class . '::getOutput("assets/compiled/main.css", [], $this->global->' . AssetMacro::MANIFEST_PROVIDER . ', $this->global->cacheStorage ?? null)',
 			$latte->compile($template2)
 		);
 	}
