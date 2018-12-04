@@ -14,7 +14,7 @@ with [gulp](https://github.com/webrouse/n-asset-macro/tree/master/examples/gulp 
 ## Requirements
 
 * [PHP](https://php.net) >=7.1 (version `v1.2.1` as the last one supports `PHP 5.6`)
-* [Nette](https://github.com/nette) >=2.3
+* [Nette](https://github.com/nette) >=2.4
 * [Latte](https://github.com/nette/latte) >=2.4
 
 `Nette 3` is fully supported and tested.
@@ -39,14 +39,14 @@ Macro can by used in any presenter or control template:
 ```latte
 {* app/presenters/templates/@layout.latte *}
 <script src="{asset resources/vendor.js}"></script>
-<script src="{asset resources/main.js}"></script>
+<script src="{asset //resources/main.js}"></script>
 ```
 
-It prepends path with ```$basePath``` and loads revision from the [revision manifest](#revision-manifest):
+It prepends path with `$basePath` or `$baseUrl` (see [absolute](#absolute)) and loads revision from the [revision manifest](#revision-manifest):
 
 ```html
 <script src="/base/path/resources/vendor.d78da025b7.js"></script>
-<script src="/base/path/resources/main.34edebe2a2.js"></script>
+<script src="http://www.example.com/base/path/resources/main.34edebe2a2.js"></script>
 ```
 
 See the [examples](#examples) for usage with [gulp](https://github.com/webrouse/n-asset-macro/tree/master/examples/gulp "Gulp example"), [webpack](https://github.com/webrouse/n-asset-macro/tree/master/examples/webpack "Webpack example"), [grunt](https://github.com/webrouse/n-asset-macro/tree/master/examples/grunt "Grunt example").
@@ -130,11 +130,13 @@ The format is defined by the second macro parameter or using the `format` key (d
 
 | Placeholder  | Example output                                                            |
 | -------------|---------------------------------------------------------------------------|
-| `%content%`  | `<svg>....</svg>` (file content)                                            |
-| `%url%`      | `/base/path/js/main.js?v=8c48f58df` or `/base/path/js/main.8c48f58df.js`  |
+| `%content%`  | `<svg>....</svg>` (file content)                                          |
 | `%path%`     | `js/main.js` or `js/main.8c48f58df.js`                                    |
 | `%raw%`      | `8c48f58df` or `js/main.8c48f58df.js`                                     |
+| `%base%`     | `%baseUrl%` if `absolute => true` else `%basePath%`                       |
 | `%basePath%` | `/base/path`                                                              |
+| `%baseUrl%`  | `http://www.example.com/base/path`                                        |
+| `%url%`      | `%base%%path%` (default format) eg. `/base/path/js/main.8c48f58df.js`     |
 
 ```latte
 {* app/presenters/templates/@layout.latte *}
@@ -165,6 +167,31 @@ Generated output:
 ```html
 <script src="/base/path/js/missing_rev.js?v=unknown"></script>
 ```
+
+
+### `absolute`
+
+Output URL type - relative or absolute - is defined by fourth macro parameter or using `absolute` key (default `false`).
+
+If `absolute => true` is set or asset path is prefixed with `//` eg. (`//assets/js/main.js`), the absolute URL (`$baseUrl` is used) will be generated instead of a relative URL (`$basePath` is used).
+
+```latte
+{asset 'js/vendor.js'}
+{asset '//js/vendor.js'}
+{asset 'js/vendor.js', absolute => true}
+{asset 'js/vendor.js', absolute => false}
+
+```
+
+Generated output:
+```html
+<script src="/base/path/js/vendor.d67fbce193.js"></script>
+<script src="http://www.example.com/base/path/js/vendor.d67fbce193.js"></script>
+<script src="/base/path/js/vendor.d67fbce193.js"></script>
+<script src="http://www.example.com/base/path/js/vendor.d67fbce193.js"></script>
+
+```
+
 ## Caching
 
 In production mode is the macro output cached in default application's [cache storage](https://doc.nette.org/en/2.4/caching). 
@@ -182,7 +209,7 @@ assetMacro:
     cache: %productionMode%
     # Path to revision manifest or asset => revision pairs,
     # if set, the autodetection is switched off
-    manifest: null # %wwwDir%/assets.json
+    manifest: null # %wwwDir%/assets/manifest.json
     # File names for automatic detection of revision manifest
     autodetect:
         - assets.json
@@ -196,6 +223,8 @@ assetMacro:
     missingManifest: notice
     # Action if missing asset revision in manifest: exception, notice, or ignore
     missingRevision: notice
+    # Default format, can be changed in macro using "format => ..."
+    format: '%%url%%' # character % is escaped by %%
 ```
 
 ## Examples
