@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Webrouse\AssetMacro;
 
 use Tester\Assert;
-use Tester\TestCase;
 
 include '../bootstrap.php';
 
@@ -35,9 +34,7 @@ class ManifestTest extends TestCase
 		$template = '{asset "assets/compiled/main.js"}';
 		Assert::same(
 			'/base/path/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -62,9 +59,7 @@ class ManifestTest extends TestCase
 		]);
 
 		$template = '{asset "assets/compiled/main.js"}';
-		$latte->renderToString($template, [
-			'basePath' => '/base/path',
-		]);
+		$latte->renderToString($template, self::LATTE_VARS);
 	}
 
 
@@ -88,17 +83,13 @@ class ManifestTest extends TestCase
 
 		$template = '{asset "assets/compiled/main.js"}';
 		Assert::error(function () use ($latte, $template) {
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			]);
+			$latte->renderToString($template, self::LATTE_VARS);
 		}, E_USER_NOTICE);
 
 		error_reporting(E_ERROR | E_PARSE);
 		Assert::equal(
 			'/base/path/assets/compiled/main.js?v=unknown',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 }

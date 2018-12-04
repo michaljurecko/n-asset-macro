@@ -7,7 +7,6 @@ use Nette;
 use Nette\Bridges\ApplicationLatte\ILatteFactory;
 use Tester;
 use Tester\Assert;
-use Tester\TestCase;
 
 include '../bootstrap.php';
 
@@ -55,9 +54,7 @@ assetMacro:
 
 			$latte = $latteFactory->create();
 			Assert::same("/base/path/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546\n",
-				$latte->renderToString(FIXTURES_DIR . '/template1.latte', [
-					'basePath' => '/base/path',
-				]));
+				$latte->renderToString(FIXTURES_DIR . '/template1.latte', self::LATTE_VARS));
 
 			unlink($path);
 		}
@@ -87,9 +84,7 @@ assetMacro:
 
 		$latte = $latteFactory->create();
 		Assert::same("/base/path/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546\n",
-			$latte->renderToString(FIXTURES_DIR . '/template1.latte', [
-				'basePath' => '/base/path',
-		]));
+			$latte->renderToString(FIXTURES_DIR . '/template1.latte', self::LATTE_VARS));
 	}
 
 
@@ -116,13 +111,9 @@ assetMacro:
 		$latteFactory = $container->getByType(ILatteFactory::class);
 		$latte = $latteFactory->create();
 		Assert::same("/base/path/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546\n",
-			$latte->renderToString(FIXTURES_DIR . '/template1.latte', [
-				'basePath' => '/base/path',
-			]));
+			$latte->renderToString(FIXTURES_DIR . '/template1.latte', self::LATTE_VARS));
 		Assert::same("/base/path/assets/compiled/main.css?v=e9724c7164e33949129b964af7382dfa\n",
-			$latte->renderToString(FIXTURES_DIR . '/template2.latte', [
-				'basePath' => '/base/path',
-			]));
+			$latte->renderToString(FIXTURES_DIR . '/template2.latte', self::LATTE_VARS));
 	}
 
 

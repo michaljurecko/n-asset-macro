@@ -5,7 +5,6 @@ namespace Webrouse\AssetMacro;
 
 use Latte;
 use Tester\Assert;
-use Tester\TestCase;
 
 include '../bootstrap.php';
 
@@ -36,9 +35,7 @@ class VersionsTest extends TestCase
 
 		Assert::same(
 			'/base/path/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -61,9 +58,7 @@ class VersionsTest extends TestCase
 		]);
 
 		$template = '{asset "assets/compiled/main.js", 123}';
-		$latte->renderToString($template, [
-			'basePath' => '/base/path',
-		]);
+		$latte->renderToString($template, self::LATTE_VARS);
 	}
 
 
@@ -85,9 +80,7 @@ class VersionsTest extends TestCase
 		]);
 
 		$template = '{asset "assets/compiled/main.js", "%url%", 123}';
-		$latte->renderToString($template, [
-			'basePath' => '/base/path',
-		]);
+		$latte->renderToString($template, self::LATTE_VARS);
 	}
 
 
@@ -110,9 +103,7 @@ class VersionsTest extends TestCase
 		$template = '{asset "assets/compiled/invalid.js", "%url%", false}';
 		Assert::same(
 			'',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -136,9 +127,7 @@ class VersionsTest extends TestCase
 		$template = '{asset "invalid.js", need => FALSE}';
 		Assert::same(
 			'',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -161,9 +150,7 @@ class VersionsTest extends TestCase
 		]);
 
 		$template = '{asset}';
-		$latte->renderToString($template, [
-			'basePath' => '/base/path',
-		]);
+		$latte->renderToString($template, self::LATTE_VARS);
 	}
 
 
@@ -184,10 +171,8 @@ class VersionsTest extends TestCase
 			'missingRevision' => 'exception',
 		]);
 
-		$template = '{asset "a", "b", "c", "d"}';
-		$latte->renderToString($template, [
-			'basePath' => '/base/path',
-		]);
+		$template = '{asset "a", "b", "c", "d", "e"}';
+		$latte->renderToString($template, self::LATTE_VARS);
 	}
 
 
@@ -210,9 +195,7 @@ class VersionsTest extends TestCase
 		$template = '{asset "assets/compiled/main.js", "%content%"}';
 		Assert::same(
 			'main',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -236,9 +219,7 @@ class VersionsTest extends TestCase
 		$template = '{asset "assets/compiled/main.js", "%url%"}';
 		Assert::same(
 			'/base/path/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -262,9 +243,7 @@ class VersionsTest extends TestCase
 		$template = '{asset "assets/compiled/main.js", "%path%"}';
 		Assert::same(
 			'assets/compiled/main.js',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -288,9 +267,79 @@ class VersionsTest extends TestCase
 		$template = '{asset "assets/compiled/main.js", "%raw%"}';
 		Assert::same(
 			'8c48f58dfc7330c89c42550963c81546',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
+		);
+	}
+
+
+	/**
+	 * Test asset macro format: %base% is relative url
+	 */
+	public function testFormatBaseRelative()
+	{
+		$latte = TestUtils::createLatte();
+		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
+			'cache' => false,
+			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
+			'autodetect' => [],
+			'wwwDir' => WWW_FIXTURES_DIR,
+			'missingAsset' => 'exception',
+			'missingManifest' => 'exception',
+			'missingRevision' => 'exception',
+		]);
+
+		$template = '{asset "assets/compiled/main.js", "%base%"}';
+		Assert::same(
+			'/base/path',
+			$latte->renderToString($template, self::LATTE_VARS)
+		);
+	}
+
+
+	/**
+	 * Test asset macro format: %base% is absolute
+	 */
+	public function testFormatBaseAbsolute()
+	{
+		$latte = TestUtils::createLatte();
+		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
+			'cache' => false,
+			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
+			'autodetect' => [],
+			'wwwDir' => WWW_FIXTURES_DIR,
+			'missingAsset' => 'exception',
+			'missingManifest' => 'exception',
+			'missingRevision' => 'exception',
+		]);
+
+		$template = '{asset "//assets/compiled/main.js", "%base%"}';
+		Assert::same(
+			'http://www.example.com/base/path',
+			$latte->renderToString($template, self::LATTE_VARS)
+		);
+	}
+
+
+	/**
+	 * Test asset macro format: %baseUrl%
+	 */
+	public function testFormatBaseUrl()
+	{
+		$latte = TestUtils::createLatte();
+		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
+			'cache' => false,
+			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
+			'autodetect' => [],
+			'wwwDir' => WWW_FIXTURES_DIR,
+			'missingAsset' => 'exception',
+			'missingManifest' => 'exception',
+			'missingRevision' => 'exception',
+		]);
+
+		$template = '{asset "assets/compiled/main.js", "%baseUrl%"}';
+		Assert::same(
+			'http://www.example.com/base/path',
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -314,9 +363,7 @@ class VersionsTest extends TestCase
 		$template = '{asset "assets/compiled/main.js", "%basePath%"}';
 		Assert::same(
 			'/base/path',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -340,9 +387,7 @@ class VersionsTest extends TestCase
 		$template = '{asset "assets/compiled/main.js", format => "%raw%"}';
 		Assert::same(
 			'8c48f58dfc7330c89c42550963c81546',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -365,9 +410,7 @@ class VersionsTest extends TestCase
 		]);
 
 		$template = '{asset "assets/compiled/main.js", "%abc%"}';
-		$latte->renderToString($template, [
-			'basePath' => '/base/path',
-		]);
+		$latte->renderToString($template, self::LATTE_VARS);
 	}
 
 
@@ -390,9 +433,7 @@ class VersionsTest extends TestCase
 		$template = '{asset "assets/compiled/main.js", "%path%?v=%raw%"}';
 		Assert::same(
 			'assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -415,9 +456,7 @@ class VersionsTest extends TestCase
 		]);
 
 		$template = "{asset 'assets/compiled/main.js'}";
-		$latte->renderToString($template, [
-			'basePath' => '/base/path',
-		]);
+		$latte->renderToString($template, self::LATTE_VARS);
 	}
 
 
@@ -440,17 +479,13 @@ class VersionsTest extends TestCase
 		$template = "{asset 'assets/compiled/main.js'}";
 
 		Assert::error(function () use ($template, $latte) {
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			]);
+			$latte->renderToString($template, self::LATTE_VARS);
 		}, E_USER_NOTICE);
 
 		error_reporting(E_ERROR | E_PARSE);
 		Assert::same(
 			'/base/path/assets/compiled/main.js?v=unknown',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -475,9 +510,7 @@ class VersionsTest extends TestCase
 
 		Assert::same(
 			'/base/path/assets/compiled/main.js?v=unknown',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -501,9 +534,7 @@ class VersionsTest extends TestCase
 		$template = '{asset "assets/compiled/some.js"}';
 		Assert::same(
 			'/base/path/assets/compiled/some.js?v=unknown',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -527,17 +558,13 @@ class VersionsTest extends TestCase
 		$template = '{asset "assets/compiled/some.js"}';
 
 		Assert::error(function () use ($template, $latte) {
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			]);
+			$latte->renderToString($template, self::LATTE_VARS);
 		}, E_USER_NOTICE);
 
 		error_reporting(E_ERROR | E_PARSE);
 		Assert::same(
 			'/base/path/assets/compiled/some.js?v=unknown',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -560,9 +587,7 @@ class VersionsTest extends TestCase
 		]);
 
 		$template = '{asset "assets/compiled/some.js"}';
-		$latte->renderToString($template, [
-			'basePath' => '/base/path',
-		]);
+		$latte->renderToString($template, self::LATTE_VARS);
 	}
 
 
@@ -584,9 +609,7 @@ class VersionsTest extends TestCase
 		]);
 
 		$template = '{asset "assets/compiled/main.js"}';
-		$latte->renderToString($template, [
-			'basePath' => '/base/path',
-		]);
+		$latte->renderToString($template, self::LATTE_VARS);
 	}
 
 
@@ -608,9 +631,7 @@ class VersionsTest extends TestCase
 		]);
 
 		$template = '{asset "assets/compiled/invalid.js"}';
-		$latte->renderToString($template, [
-			'basePath' => '/base/path',
-		]);
+		$latte->renderToString($template, self::LATTE_VARS);
 	}
 
 
@@ -633,17 +654,13 @@ class VersionsTest extends TestCase
 		$template = '{asset "assets/compiled/invalid.js"}';
 
 		Assert::error(function () use ($latte, $template) {
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			]);
+			$latte->renderToString($template, self::LATTE_VARS);
 		}, E_USER_NOTICE);
 
 		error_reporting(E_ERROR | E_PARSE);
 		Assert::same(
 			'',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 
@@ -667,9 +684,103 @@ class VersionsTest extends TestCase
 		$template = '{asset "assets/compiled/invalid.js"}';
 		Assert::same(
 			'',
-			$latte->renderToString($template, [
-				'basePath' => '/base/path',
-			])
+			$latte->renderToString($template, self::LATTE_VARS)
+		);
+	}
+
+
+	/**
+	 * Test if macro ignore start slashes in manifest
+	 */
+	public function testStripOptionalSlashes()
+	{
+		$latte = TestUtils::createLatte();
+		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
+			'cache' => false,
+			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
+			'autodetect' => [],
+			'wwwDir' => WWW_FIXTURES_DIR,
+			'missingAsset' => 'exception',
+			'missingManifest' => 'exception',
+			'missingRevision' => 'exception',
+		]);
+
+		$template = '{asset "/assets/compiled/other.js"}';
+		Assert::same(
+			'/base/path/assets/compiled/other.js?v=8h9hfj5vvh4jffokvzj6h1fjfnfd9c',
+			$latte->renderToString($template, self::LATTE_VARS)
+		);
+	}
+
+
+	/**
+	 * Test if macro generates absolute path, if asset path starts with //
+	 */
+	public function testAbsolutePathByPathPrefix()
+	{
+		$latte = TestUtils::createLatte();
+		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
+			'cache' => false,
+			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
+			'autodetect' => [],
+			'wwwDir' => WWW_FIXTURES_DIR,
+			'missingAsset' => 'exception',
+			'missingManifest' => 'exception',
+			'missingRevision' => 'exception',
+		]);
+
+		$template = '{asset "//assets/compiled/other.js"}';
+		Assert::same(
+			'http://www.example.com/base/path/assets/compiled/other.js?v=8h9hfj5vvh4jffokvzj6h1fjfnfd9c',
+			$latte->renderToString($template, self::LATTE_VARS)
+		);
+	}
+
+
+	/**
+	 * Test if macro generates absolute path, if absolute=true
+	 */
+	public function testAbsolutePathByParameter()
+	{
+		$latte = TestUtils::createLatte();
+		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
+			'cache' => false,
+			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
+			'autodetect' => [],
+			'wwwDir' => WWW_FIXTURES_DIR,
+			'missingAsset' => 'exception',
+			'missingManifest' => 'exception',
+			'missingRevision' => 'exception',
+		]);
+
+		$template = '{asset "/assets/compiled/other.js", absolute => true}';
+		Assert::same(
+			'http://www.example.com/base/path/assets/compiled/other.js?v=8h9hfj5vvh4jffokvzj6h1fjfnfd9c',
+			$latte->renderToString($template, self::LATTE_VARS)
+		);
+	}
+
+
+	/**
+	 * Test if macro generates absolute path, if argument true
+	 */
+	public function testAbsolutePathByArgument()
+	{
+		$latte = TestUtils::createLatte();
+		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
+			'cache' => false,
+			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
+			'autodetect' => [],
+			'wwwDir' => WWW_FIXTURES_DIR,
+			'missingAsset' => 'exception',
+			'missingManifest' => 'exception',
+			'missingRevision' => 'exception',
+		]);
+
+		$template = '{asset "/assets/compiled/other.js", "%url%", true, true}';
+		Assert::same(
+			'http://www.example.com/base/path/assets/compiled/other.js?v=8h9hfj5vvh4jffokvzj6h1fjfnfd9c',
+			$latte->renderToString($template, self::LATTE_VARS)
 		);
 	}
 }
