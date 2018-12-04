@@ -23,6 +23,8 @@ parameters:
 	polluteCatchScopeWithTryAssignments: true
 	ignoreErrors:
 		- '#Constant TEMP_DIR not found#'
+		- '#Constant WWW_FIXTURES_DIR not found.#'
+		- '#Mockery#'
 		- '#Call to an undefined method Nette\\DI\\Definitions\\Definition::addSetup\(\).#'
 
 

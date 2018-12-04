@@ -21,9 +21,10 @@
 		"nette/caching": ">=2.5",
 		"nette/utils": "3.0.x-dev as 2.5.x-dev",
 		"nette/tester": ">=2.0",
-		"mockery/mockery": "^0.9.9",
+		"mockery/mockery": "^1.2.0",
 		"nette/coding-standard": ">=2.0",
-		"phpstan/phpstan-nette": ">=0.9"
+		"phpstan/phpstan-nette": ">=0.9",
+		"tracy/tracy": "^3.0@dev"
 	},
 	"autoload": {
 		"psr-0": {

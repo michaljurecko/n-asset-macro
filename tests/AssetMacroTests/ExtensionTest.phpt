@@ -3,8 +3,14 @@ declare(strict_types=1);
 
 namespace Webrouse\AssetMacro;
 
-use Nette;
+use Mockery;
+use Mockery\Mock;
 use Nette\Bridges\ApplicationLatte\ILatteFactory;
+use Nette\Configurator;
+use Nette\DI\Container;
+use Nette\Http\IRequest;
+use Nette\Http\UrlScript;
+use Nette\Utils\Random;
 use Tester;
 use Tester\Assert;
 
@@ -22,6 +28,7 @@ extensions:
 	assetMacro: Webrouse\\AssetMacro\\DI\\Extension
 assetMacro:
 	cache: false
+	publicPath: fixtures
 		');
 
 		$wwwDir = $container->parameters['wwwDir'];
@@ -53,8 +60,8 @@ assetMacro:
 			$latteFactory = $container->getByType(ILatteFactory::class);
 
 			$latte = $latteFactory->create();
-			Assert::same("/base/path/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546\n",
-				$latte->renderToString(FIXTURES_DIR . '/template1.latte', self::LATTE_VARS));
+			Assert::same("/base/path/fixtures/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546\n",
+				$latte->renderToString(FIXTURES_DIR . '/template1.latte'));
 
 			unlink($path);
 		}
@@ -73,6 +80,7 @@ extensions:
 	assetMacro: Webrouse\\AssetMacro\\DI\\Extension
 assetMacro:
 	cache: false
+	publicPath: fixtures
 	manifest: $manifest
 		");
 
@@ -83,8 +91,8 @@ assetMacro:
 		$latteFactory = $container->getByType(ILatteFactory::class);
 
 		$latte = $latteFactory->create();
-		Assert::same("/base/path/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546\n",
-			$latte->renderToString(FIXTURES_DIR . '/template1.latte', self::LATTE_VARS));
+		Assert::same("/base/path/fixtures/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546\n",
+			$latte->renderToString(FIXTURES_DIR . '/template1.latte'));
 	}
 
 
@@ -98,6 +106,7 @@ extensions:
 	assetMacro: Webrouse\\AssetMacro\\DI\\Extension
 assetMacro:
 	cache: false
+	publicPath: fixtures
 	manifest:
 		'assets/compiled/main.js': 8c48f58dfc7330c89c42550963c81546
 		'assets/compiled/main.css': e9724c7164e33949129b964af7382dfa
@@ -110,10 +119,10 @@ assetMacro:
 		/** @var ILatteFactory $latteFactory */
 		$latteFactory = $container->getByType(ILatteFactory::class);
 		$latte = $latteFactory->create();
-		Assert::same("/base/path/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546\n",
-			$latte->renderToString(FIXTURES_DIR . '/template1.latte', self::LATTE_VARS));
-		Assert::same("/base/path/assets/compiled/main.css?v=e9724c7164e33949129b964af7382dfa\n",
-			$latte->renderToString(FIXTURES_DIR . '/template2.latte', self::LATTE_VARS));
+		Assert::same("/base/path/fixtures/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546\n",
+			$latte->renderToString(FIXTURES_DIR . '/template1.latte'));
+		Assert::same("/base/path/fixtures/assets/compiled/main.css?v=e9724c7164e33949129b964af7382dfa\n",
+			$latte->renderToString(FIXTURES_DIR . '/template2.latte'));
 	}
 
 
@@ -166,24 +175,34 @@ assetMacro:
 
 	/**
 	 * @param string $configContent
-	 * @return Nette\DI\Container
+	 * @return Container
 	 */
 	protected function createContainer($configContent)
 	{
-		$hash = md5(TEMP_DIR . '_' . $configContent . '_' . Nette\Utils\Random::generate(10));
+		$hash = md5(TEMP_DIR . '_' . $configContent . '_' . Random::generate(10));
 		$tempDir = TEMP_DIR . '/container_' . $hash;
 		@mkdir($tempDir, 0777, true);
 		$appDir = $tempDir . '/app';
 		@mkdir($appDir, 0777, true);
 		$wwwDir = $tempDir . '/www';
 		@mkdir($wwwDir, 0777, true);
-		$config = new Nette\Configurator();
+		$config = new Configurator();
 		$config->setTempDirectory($tempDir);
 		$config->addParameters(['container' => ['class' => 'SystemContainer_' . $hash]]);
 		$config->addParameters(['appDir' => $appDir, 'wwwDir' => $wwwDir]);
 		$config->addConfig(TESTS_DIR . '/nette-reset.neon');
 		$config->addConfig(Tester\FileMock::create($configContent, 'neon'));
-		return $config->createContainer();
+		$container = $config->createContainer();
+
+		/** @var $httpRequest */
+		$httpRequest = $container->getService('http.request');
+		/** @var IRequest|Mock $httpRequestMock */
+		$httpRequestMock = Mockery::mock($httpRequest)->makePartial();
+		$httpRequestMock->shouldReceive('getUrl')->andReturn(new UrlScript('http://www.example.com/base/path/index.php'));
+		$container->removeService('http.request');
+		$container->addService('http.request', $httpRequestMock);
+
+		return $container;
 	}
 
 

@@ -18,24 +18,19 @@ class ManifestTest extends TestCase
 	 */
 	public function testAutodetectManifest()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
+		$latte = $this->createLatte([
 			'manifest' => null,
 			'autodetect' => [
 				'versions-manifest.json',
 			],
-			'wwwDir' => WWW_FIXTURES_DIR,
 			'missingAsset' => 'ignore',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'ignore',
-			'format' => '%url%',
 		]);
 
-		$template = '{asset "assets/compiled/main.js"}';
 		Assert::same(
-			'/base/path/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'/base/path/fixtures/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546',
+			$latte->renderToString('{asset "assets/compiled/main.js"}')
 		);
 	}
 
@@ -46,22 +41,18 @@ class ManifestTest extends TestCase
 	 */
 	public function testAutodetectMissingManifestException()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
+		$latte = $this->createLatte([
 			'manifest' => null,
 			'autodetect' => [
 				'X.json',
 			],
-			'wwwDir' => WWW_FIXTURES_DIR,
 			'missingAsset' => 'ignore',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'ignore',
-			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/main.js"}';
-		$latte->renderToString($template, self::LATTE_VARS);
+		$latte->renderToString($template);
 	}
 
 
@@ -70,29 +61,25 @@ class ManifestTest extends TestCase
 	 */
 	public function testAutodetectMissingManifestIgnore()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
+		$latte = $this->createLatte([
 			'manifest' => null,
 			'autodetect' => [
 				'X.json',
 			],
-			'wwwDir' => WWW_FIXTURES_DIR,
 			'missingAsset' => 'ignore',
 			'missingManifest' => 'notice',
 			'missingRevision' => 'ignore',
-			'format' => '%url%',
 		]);
 
 		$template = '{asset "assets/compiled/main.js"}';
 		Assert::error(function () use ($latte, $template) {
-			$latte->renderToString($template, self::LATTE_VARS);
+			$latte->renderToString($template);
 		}, E_USER_NOTICE);
 
 		error_reporting(E_ERROR | E_PARSE);
 		Assert::equal(
-			'/base/path/assets/compiled/main.js?v=unknown',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'/base/path/fixtures/assets/compiled/main.js?v=unknown',
+			$latte->renderToString($template)
 		);
 	}
 }

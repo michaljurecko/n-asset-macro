@@ -20,23 +20,10 @@ class VersionsTest extends TestCase
 	 */
 	public function testRender()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'notice',
-			'missingManifest' => 'notice',
-			'missingRevision' => 'notice',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "assets/compiled/main.js"}';
-
+		$latte = $this->createLatte();
 		Assert::same(
-			'/base/path/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'/base/path/fixtures/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546',
+			$latte->renderToString('{asset "assets/compiled/main.js"}')
 		);
 	}
 
@@ -47,20 +34,8 @@ class VersionsTest extends TestCase
 	 */
 	public function testInvalidTypeFormatArgument()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'notice',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "assets/compiled/main.js", 123}';
-		$latte->renderToString($template, self::LATTE_VARS);
+		$latte = $this->createLatte();
+		$latte->renderToString('{asset "assets/compiled/main.js", 123}');
 	}
 
 
@@ -70,20 +45,8 @@ class VersionsTest extends TestCase
 	 */
 	public function testInvalidTypeNeedArgument()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'notice',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "assets/compiled/main.js", "%url%", 123}';
-		$latte->renderToString($template, self::LATTE_VARS);
+		$latte = $this->createLatte();
+		$latte->renderToString('{asset "assets/compiled/main.js", "%url%", 123}');
 	}
 
 
@@ -92,22 +55,10 @@ class VersionsTest extends TestCase
 	 */
 	public function testMissingAssetNeedArgumentFalse()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "assets/compiled/invalid.js", "%url%", false}';
+		$latte = $this->createLatte();
 		Assert::same(
 			'',
-			$latte->renderToString($template, self::LATTE_VARS)
+			$latte->renderToString('{asset "assets/compiled/invalid.js", "%url%", false}')
 		);
 	}
 
@@ -117,22 +68,10 @@ class VersionsTest extends TestCase
 	 */
 	public function testNeedNamedParameter()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "invalid.js", need => FALSE}';
+		$latte = $this->createLatte();
 		Assert::same(
 			'',
-			$latte->renderToString($template, self::LATTE_VARS)
+			$latte->renderToString('{asset "invalid.js", need => FALSE}')
 		);
 	}
 
@@ -143,20 +82,8 @@ class VersionsTest extends TestCase
 	 */
 	public function testWithoutArguments()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset}';
-		$latte->renderToString($template, self::LATTE_VARS);
+		$latte = $this->createLatte();
+		$latte->renderToString('{asset}');
 	}
 
 
@@ -166,20 +93,8 @@ class VersionsTest extends TestCase
 	 */
 	public function testTooManyArguments()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "a", "b", "c", "d", "e"}';
-		$latte->renderToString($template, self::LATTE_VARS);
+		$latte = $this->createLatte();
+		$latte->renderToString('{asset "a", "b", "c", "d", "e"}');
 	}
 
 
@@ -188,22 +103,10 @@ class VersionsTest extends TestCase
 	 */
 	public function testDefaultFormat()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '/prefix%url%',
-		]);
-
-		$template = '{asset "assets/compiled/main.js"}';
+		$latte = $this->createLatte(['format' => '/prefix%url%']);
 		Assert::same(
-			'/prefix/base/path/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'/prefix/base/path/fixtures/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546',
+			$latte->renderToString('{asset "assets/compiled/main.js"}')
 		);
 	}
 
@@ -213,22 +116,10 @@ class VersionsTest extends TestCase
 	 */
 	public function testFormatContent()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "assets/compiled/main.js", "%content%"}';
+		$latte = $this->createLatte();
 		Assert::same(
 			'main',
-			$latte->renderToString($template, self::LATTE_VARS)
+			$latte->renderToString('{asset "assets/compiled/main.js", "%content%"}')
 		);
 	}
 
@@ -238,22 +129,10 @@ class VersionsTest extends TestCase
 	 */
 	public function testFormatUrl()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "assets/compiled/main.js", "%url%"}';
+		$latte = $this->createLatte();
 		Assert::same(
-			'/base/path/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'/base/path/fixtures/assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546',
+			$latte->renderToString('{asset "assets/compiled/main.js", "%url%"}')
 		);
 	}
 
@@ -263,22 +142,10 @@ class VersionsTest extends TestCase
 	 */
 	public function testFormatPath()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "assets/compiled/main.js", "%path%"}';
+		$latte = $this->createLatte();
 		Assert::same(
 			'assets/compiled/main.js',
-			$latte->renderToString($template, self::LATTE_VARS)
+			$latte->renderToString('{asset "assets/compiled/main.js", "%path%"}')
 		);
 	}
 
@@ -288,22 +155,10 @@ class VersionsTest extends TestCase
 	 */
 	public function testFormatRaw()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "assets/compiled/main.js", "%raw%"}';
+		$latte = $this->createLatte();
 		Assert::same(
 			'8c48f58dfc7330c89c42550963c81546',
-			$latte->renderToString($template, self::LATTE_VARS)
+			$latte->renderToString('{asset "assets/compiled/main.js", "%raw%"}')
 		);
 	}
 
@@ -313,22 +168,10 @@ class VersionsTest extends TestCase
 	 */
 	public function testFormatBaseRelative()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "assets/compiled/main.js", "%base%"}';
+		$latte = $this->createLatte();
 		Assert::same(
-			'/base/path',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'/base/path/fixtures/',
+			$latte->renderToString('{asset "assets/compiled/main.js", "%base%"}')
 		);
 	}
 
@@ -338,22 +181,10 @@ class VersionsTest extends TestCase
 	 */
 	public function testFormatBaseAbsolute()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "//assets/compiled/main.js", "%base%"}';
+		$latte = $this->createLatte();
 		Assert::same(
-			'http://www.example.com/base/path',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'http://www.example.com/base/path/fixtures/',
+			$latte->renderToString('{asset "//assets/compiled/main.js", "%base%"}')
 		);
 	}
 
@@ -363,22 +194,10 @@ class VersionsTest extends TestCase
 	 */
 	public function testFormatBaseUrl()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "assets/compiled/main.js", "%baseUrl%"}';
+		$latte = $this->createLatte();
 		Assert::same(
-			'http://www.example.com/base/path',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'http://www.example.com/base/path/fixtures/',
+			$latte->renderToString('{asset "assets/compiled/main.js", "%baseUrl%"}')
 		);
 	}
 
@@ -388,22 +207,10 @@ class VersionsTest extends TestCase
 	 */
 	public function testFormatBasePath()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "assets/compiled/main.js", "%basePath%"}';
+		$latte = $this->createLatte();
 		Assert::same(
-			'/base/path',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'/base/path/fixtures/',
+			$latte->renderToString('{asset "assets/compiled/main.js", "%basePath%"}')
 		);
 	}
 
@@ -413,22 +220,10 @@ class VersionsTest extends TestCase
 	 */
 	public function testFormatNamedParameter()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "assets/compiled/main.js", format => "%raw%"}';
+		$latte = $this->createLatte();
 		Assert::same(
 			'8c48f58dfc7330c89c42550963c81546',
-			$latte->renderToString($template, self::LATTE_VARS)
+			$latte->renderToString('{asset "assets/compiled/main.js", format => "%raw%"}')
 		);
 	}
 
@@ -439,20 +234,8 @@ class VersionsTest extends TestCase
 	 */
 	public function testFormatInvalidVariable()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'ignore',
-			'missingManifest' => 'ignore',
-			'missingRevision' => 'notice',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "assets/compiled/main.js", "%abc%"}';
-		$latte->renderToString($template, self::LATTE_VARS);
+		$latte = $this->createLatte();
+		$latte->renderToString('{asset "assets/compiled/main.js", "%abc%"}');
 	}
 
 
@@ -461,22 +244,10 @@ class VersionsTest extends TestCase
 	 */
 	public function testFormatMultipleVars()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "assets/compiled/main.js", "%path%?v=%raw%"}';
+		$latte = $this->createLatte();
 		Assert::same(
 			'assets/compiled/main.js?v=8c48f58dfc7330c89c42550963c81546',
-			$latte->renderToString($template, self::LATTE_VARS)
+			$latte->renderToString('{asset "assets/compiled/main.js", "%path%?v=%raw%"}')
 		);
 	}
 
@@ -487,20 +258,8 @@ class VersionsTest extends TestCase
 	 */
 	public function testMissingManifestException()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/version_invalid.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = "{asset 'assets/compiled/main.js'}";
-		$latte->renderToString($template, self::LATTE_VARS);
+		$latte = $this->createLatte(['missingManifest' => 'exception', 'manifest' => WWW_FIXTURES_DIR . '/invalid.json']);
+		$latte->renderToString("{asset 'assets/compiled/main.js'}");
 	}
 
 
@@ -509,28 +268,17 @@ class VersionsTest extends TestCase
 	 */
 	public function testMissingManifestNotice()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/version_invalid.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'notice',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
+		$latte = $this->createLatte(['missingManifest' => 'notice', 'manifest' => WWW_FIXTURES_DIR . '/invalid.json']);
 		$template = "{asset 'assets/compiled/main.js'}";
 
 		Assert::error(function () use ($template, $latte) {
-			$latte->renderToString($template, self::LATTE_VARS);
+			$latte->renderToString($template);
 		}, E_USER_NOTICE);
 
 		error_reporting(E_ERROR | E_PARSE);
 		Assert::same(
-			'/base/path/assets/compiled/main.js?v=unknown',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'/base/path/fixtures/assets/compiled/main.js?v=unknown',
+			$latte->renderToString($template)
 		);
 	}
 
@@ -540,23 +288,11 @@ class VersionsTest extends TestCase
 	 */
 	public function testMissingManifestIgnore()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/version_invalid.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'ignore',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = "{asset 'assets/compiled/main.js'}";
+		$latte = $this->createLatte(['missingManifest' => 'ignore', 'manifest' => WWW_FIXTURES_DIR . '/invalid.json']);
 
 		Assert::same(
-			'/base/path/assets/compiled/main.js?v=unknown',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'/base/path/fixtures/assets/compiled/main.js?v=unknown',
+			$latte->renderToString("{asset 'assets/compiled/main.js'}")
 		);
 	}
 
@@ -566,22 +302,10 @@ class VersionsTest extends TestCase
 	 */
 	public function testMissingRevisionIgnore()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'ignore',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "assets/compiled/some.js"}';
+		$latte = $this->createLatte(['missingRevision' => 'ignore']);
 		Assert::same(
-			'/base/path/assets/compiled/some.js?v=unknown',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'/base/path/fixtures/assets/compiled/some.js?v=unknown',
+			$latte->renderToString('{asset "assets/compiled/some.js"}')
 		);
 	}
 
@@ -591,28 +315,17 @@ class VersionsTest extends TestCase
 	 */
 	public function testMissingRevisionNotice()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'notice',
-			'format' => '%url%',
-		]);
-
+		$latte = $this->createLatte(['missingRevision' => 'notice']);
 		$template = '{asset "assets/compiled/some.js"}';
 
 		Assert::error(function () use ($template, $latte) {
-			$latte->renderToString($template, self::LATTE_VARS);
+			$latte->renderToString($template);
 		}, E_USER_NOTICE);
 
 		error_reporting(E_ERROR | E_PARSE);
 		Assert::same(
-			'/base/path/assets/compiled/some.js?v=unknown',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'/base/path/fixtures/assets/compiled/some.js?v=unknown',
+			$latte->renderToString($template)
 		);
 	}
 
@@ -623,20 +336,8 @@ class VersionsTest extends TestCase
 	 */
 	public function testMissingRevisionException()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "assets/compiled/some.js"}';
-		$latte->renderToString($template, self::LATTE_VARS);
+		$latte = $this->createLatte(['missingRevision' => 'exception']);
+		$latte->renderToString('{asset "assets/compiled/some.js"}');
 	}
 
 
@@ -644,22 +345,10 @@ class VersionsTest extends TestCase
 	 * Test if macro throw the exception if www dir not exists
 	 * @throws \Webrouse\AssetMacro\Exceptions\AssetNotFoundException
 	 */
-	public function testWwwDirNotExists()
+	public function testAssetsDirNotExists()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => '/invalid/www/dir',
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "assets/compiled/main.js"}';
-		$latte->renderToString($template, self::LATTE_VARS);
+		$latte = $this->createLatte(['missingAsset' => 'exception', 'assetsPath' => '/abc']);
+		$latte->renderToString('{asset "assets/compiled/main.js"}');
 	}
 
 
@@ -669,20 +358,8 @@ class VersionsTest extends TestCase
 	 */
 	public function testMissingAssetException()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'ignore',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "assets/compiled/invalid.js"}';
-		$latte->renderToString($template, self::LATTE_VARS);
+		$latte = $this->createLatte(['missingAsset' => 'exception']);
+		$latte->renderToString('{asset "assets/compiled/invalid.js"}');
 	}
 
 
@@ -691,28 +368,17 @@ class VersionsTest extends TestCase
 	 */
 	public function testMissingAssetNotice()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'notice',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'ignore',
-			'format' => '%url%',
-		]);
-
+		$latte = $this->createLatte(['missingAsset' => 'notice']);
 		$template = '{asset "assets/compiled/invalid.js"}';
 
 		Assert::error(function () use ($latte, $template) {
-			$latte->renderToString($template, self::LATTE_VARS);
+			$latte->renderToString($template);
 		}, E_USER_NOTICE);
 
 		error_reporting(E_ERROR | E_PARSE);
 		Assert::same(
 			'',
-			$latte->renderToString($template, self::LATTE_VARS)
+			$latte->renderToString($template)
 		);
 	}
 
@@ -722,22 +388,10 @@ class VersionsTest extends TestCase
 	 */
 	public function testMissingAssetIgnore()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'ignore',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'ignore',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "assets/compiled/invalid.js"}';
+		$latte = $this->createLatte(['missingAsset' => 'ignore']);
 		Assert::same(
 			'',
-			$latte->renderToString($template, self::LATTE_VARS)
+			$latte->renderToString('{asset "assets/compiled/invalid.js"}')
 		);
 	}
 
@@ -747,22 +401,10 @@ class VersionsTest extends TestCase
 	 */
 	public function testStripOptionalSlashes()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "/assets/compiled/other.js"}';
+		$latte = $this->createLatte();
 		Assert::same(
-			'/base/path/assets/compiled/other.js?v=8h9hfj5vvh4jffokvzj6h1fjfnfd9c',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'/base/path/fixtures/assets/compiled/other.js?v=8h9hfj5vvh4jffokvzj6h1fjfnfd9c',
+			$latte->renderToString('{asset "/assets/compiled/other.js"}')
 		);
 	}
 
@@ -772,22 +414,10 @@ class VersionsTest extends TestCase
 	 */
 	public function testAbsolutePathByPathPrefix()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "//assets/compiled/other.js"}';
+		$latte = $this->createLatte();
 		Assert::same(
-			'http://www.example.com/base/path/assets/compiled/other.js?v=8h9hfj5vvh4jffokvzj6h1fjfnfd9c',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'http://www.example.com/base/path/fixtures/assets/compiled/other.js?v=8h9hfj5vvh4jffokvzj6h1fjfnfd9c',
+			$latte->renderToString('{asset "//assets/compiled/other.js"}')
 		);
 	}
 
@@ -797,22 +427,10 @@ class VersionsTest extends TestCase
 	 */
 	public function testAbsolutePathByParameter()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "/assets/compiled/other.js", absolute => true}';
+		$latte = $this->createLatte();
 		Assert::same(
-			'http://www.example.com/base/path/assets/compiled/other.js?v=8h9hfj5vvh4jffokvzj6h1fjfnfd9c',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'http://www.example.com/base/path/fixtures/assets/compiled/other.js?v=8h9hfj5vvh4jffokvzj6h1fjfnfd9c',
+			$latte->renderToString('{asset "/assets/compiled/other.js", absolute => true}')
 		);
 	}
 
@@ -822,23 +440,23 @@ class VersionsTest extends TestCase
 	 */
 	public function testAbsolutePathByArgument()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
+		$latte = $this->createLatte();
+		Assert::same(
+			'http://www.example.com/base/path/fixtures/assets/compiled/other.js?v=8h9hfj5vvh4jffokvzj6h1fjfnfd9c',
+			$latte->renderToString('{asset "/assets/compiled/other.js", "%url%", true, true}')
+		);
+	}
+
+
+	protected function createLatte(array $config = []): Latte\Engine
+	{
+		return parent::createLatte(array_merge([
+			'missingAsset' => 'ignore',
+			'missingManifest' => 'ignore',
+			'missingRevision' => 'ignore',
 			'manifest' => WWW_FIXTURES_DIR . '/versions-manifest.json',
 			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "/assets/compiled/other.js", "%url%", true, true}';
-		Assert::same(
-			'http://www.example.com/base/path/assets/compiled/other.js?v=8h9hfj5vvh4jffokvzj6h1fjfnfd9c',
-			$latte->renderToString($template, self::LATTE_VARS)
-		);
+		], $config));
 	}
 }
 

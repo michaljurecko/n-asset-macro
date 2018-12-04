@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Webrouse\AssetMacro;
 
+use Latte;
 use Tester\Assert;
 
 include '../bootstrap.php';
@@ -14,24 +15,10 @@ class EscapeTest extends TestCase
 	 */
 	public function testEscapePath()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => [
-				'assets/compiled/escape.js' => '"quotes"',
-			],
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '<tag data-x="{asset "assets/compiled/escape.js"}"></tag>';
+		$latte = $this->createLatte();
 		Assert::same(
-			'<tag data-x="/base/path/assets/compiled/escape.js?v=&quot;quotes&quot;"></tag>',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'<tag data-x="/base/path/fixtures/assets/compiled/escape.js?v=&quot;quotes&quot;"></tag>',
+			$latte->renderToString('<tag data-x="{asset "assets/compiled/escape.js"}"></tag>')
 		);
 	}
 
@@ -41,24 +28,10 @@ class EscapeTest extends TestCase
 	 */
 	public function testNoescapePath()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => [
-				'assets/compiled/escape.js' => '"quotes"',
-			],
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '<tag data-x="{asset "assets/compiled/escape.js"|noescape}"></tag>';
+		$latte = $this->createLatte();
 		Assert::same(
-			'<tag data-x="/base/path/assets/compiled/escape.js?v="quotes""></tag>',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'<tag data-x="/base/path/fixtures/assets/compiled/escape.js?v="quotes""></tag>',
+			$latte->renderToString('<tag data-x="{asset "assets/compiled/escape.js"|noescape}"></tag>')
 		);
 	}
 
@@ -68,24 +41,10 @@ class EscapeTest extends TestCase
 	 */
 	public function testEscapeContent()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => [
-				'assets/compiled/escape.js' => '"quotes"',
-			],
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '<tag data-x="{asset "assets/compiled/escape.js", "%content%"}"></tag>';
+		$latte = $this->createLatte();
 		Assert::same(
 			'<tag data-x="&quot;quotes content&quot;"></tag>',
-			$latte->renderToString($template, self::LATTE_VARS)
+			$latte->renderToString('<tag data-x="{asset "assets/compiled/escape.js", "%content%"}"></tag>')
 		);
 	}
 
@@ -95,48 +54,37 @@ class EscapeTest extends TestCase
 	 */
 	public function testNoescapeContent()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => [
-				'assets/compiled/escape.js' => '"quotes"',
-			],
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'exception',
-			'missingManifest' => 'exception',
-			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '<tag data-x="{asset "assets/compiled/escape.js", "%content%"|noescape}"></tag>';
+		$latte = $this->createLatte();
 		Assert::same(
 			'<tag data-x=""quotes content""></tag>',
-			$latte->renderToString($template, self::LATTE_VARS)
+			$latte->renderToString('<tag data-x="{asset "assets/compiled/escape.js", "%content%"|noescape}"></tag>')
 		);
 	}
 
 
 	/**
 	 * Test invalid identifier
-	 * @throws \Latte\CompileException
+	 * @throws Latte\CompileException
 	 */
 	public function testInvalidIdentifier()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
+		$latte = $this->createLatte();
+		$latte->renderToString('{asset "assets/compiled/main.js"|invalid}');
+	}
+
+
+	protected function createLatte(array $config = []): Latte\Engine
+	{
+		return parent::createLatte(array_merge($config, [
 			'cache' => false,
-			'manifest' => [],
+			'manifest' => [
+				'assets/compiled/escape.js' => '"quotes"',
+			],
 			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
 			'missingAsset' => 'exception',
 			'missingManifest' => 'exception',
 			'missingRevision' => 'exception',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "assets/compiled/main.js"|invalid}';
-		$latte->renderToString($template, ['basePath' => '/base/path']);
+		]));
 	}
 }
 

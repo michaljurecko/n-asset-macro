@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Webrouse\AssetMacro;
 
+use Latte;
 use Mockery;
 use Nette;
 use Tester\Assert;
@@ -16,22 +17,10 @@ class CacheTest extends TestCase
 	 */
 	public function testCacheStorageMissing()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => true,
-			'manifest' => WWW_FIXTURES_DIR . '/paths-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'notice',
-			'missingManifest' => 'notice',
-			'missingRevision' => 'notice',
-			'format' => '%url%',
-		]);
-
-		$template = '{asset "assets/compiled/main.js"}';
+		$latte = $this->createLatte();
 		Assert::same(
-			'/base/path/assets/compiled/main.fc730c89c4255.js',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'/base/path/fixtures/assets/compiled/main.fc730c89c4255.js',
+			$latte->renderToString('{asset "assets/compiled/main.js"}')
 		);
 	}
 
@@ -41,26 +30,17 @@ class CacheTest extends TestCase
 	 */
 	public function testCacheDisabled()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => false,
-			'manifest' => WWW_FIXTURES_DIR . '/paths-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'notice',
-			'missingManifest' => 'notice',
-			'missingRevision' => 'notice',
-			'format' => '%url%',
-		]);
+		$latte = $this->createLatte(['cache' => false]);
 
 		// No method from cache storage could be called
+		/** @var Nette\Caching\IStorage|Mockery\Mock $cacheStorage */
 		$cacheStorage = Mockery::mock(Nette\Caching\IStorage::class);
 		$latte->addProvider('cacheStorage', $cacheStorage);
 
 		$template = '{asset "assets/compiled/main.js"}';
 		Assert::same(
-			'/base/path/assets/compiled/main.fc730c89c4255.js',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'/base/path/fixtures/assets/compiled/main.fc730c89c4255.js',
+			$latte->renderToString($template)
 		);
 	}
 
@@ -70,18 +50,9 @@ class CacheTest extends TestCase
 	 */
 	public function testCacheEnabledKeyMissing()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => true,
-			'manifest' => WWW_FIXTURES_DIR . '/paths-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'notice',
-			'missingManifest' => 'notice',
-			'missingRevision' => 'notice',
-			'format' => '%url%',
-		]);
+		$latte = $this->createLatte();
 
+		/** @var Nette\Caching\IStorage|Mockery\Mock $cacheStorage */
 		$cacheStorage = Mockery::mock(Nette\Caching\IStorage::class);
 		$cacheStorage
 			->shouldReceive('read')
@@ -89,7 +60,7 @@ class CacheTest extends TestCase
 			->andReturn(null);
 		$cacheStorage
 			->shouldReceive('write')
-			->with(Mockery::any(), '/base/path/assets/compiled/main.fc730c89c4255.js', Mockery::any())
+			->with(Mockery::any(), '/base/path/fixtures/assets/compiled/main.fc730c89c4255.js', Mockery::any())
 			->once()
 			->andReturn(null);
 
@@ -97,8 +68,8 @@ class CacheTest extends TestCase
 
 		$template = '{asset "assets/compiled/main.js"}';
 		Assert::same(
-			'/base/path/assets/compiled/main.fc730c89c4255.js',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'/base/path/fixtures/assets/compiled/main.fc730c89c4255.js',
+			$latte->renderToString($template)
 		);
 	}
 
@@ -108,31 +79,32 @@ class CacheTest extends TestCase
 	 */
 	public function testCacheEnabledKeyFound()
 	{
-		$latte = TestUtils::createLatte();
-		$latte->addProvider(AssetMacro::CONFIG_PROVIDER, [
-			'cache' => true,
-			'manifest' => WWW_FIXTURES_DIR . '/paths-manifest.json',
-			'autodetect' => [],
-			'wwwDir' => WWW_FIXTURES_DIR,
-			'missingAsset' => 'notice',
-			'missingManifest' => 'notice',
-			'missingRevision' => 'notice',
-			'format' => '%url%',
-		]);
+		$latte = $this->createLatte();
 
+		/** @var Nette\Caching\IStorage|Mockery\Mock $cacheStorage */
 		$cacheStorage = Mockery::mock(Nette\Caching\IStorage::class);
 		$cacheStorage
 			->shouldReceive('read')
 			->once()
-			->andReturn('/base/path/assets/CACHED/main.fc730c89c4255.js');
+			->andReturn('/base/path/fixtures/assets/CACHED/main.fc730c89c4255.js');
 
 		$latte->addProvider('cacheStorage', $cacheStorage);
 
 		$template = '{asset "assets/compiled/main.js"}';
 		Assert::same(
-			'/base/path/assets/CACHED/main.fc730c89c4255.js',
-			$latte->renderToString($template, self::LATTE_VARS)
+			'/base/path/fixtures/assets/CACHED/main.fc730c89c4255.js',
+			$latte->renderToString($template)
 		);
+	}
+
+
+	protected function createLatte(array $config = []): Latte\Engine
+	{
+		return parent::createLatte(array_merge([
+			'cache' => true,
+			'manifest' => WWW_FIXTURES_DIR . '/paths-manifest.json',
+			'autodetect' => [],
+		], $config));
 	}
 }
 
