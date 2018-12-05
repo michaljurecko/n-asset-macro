@@ -1,7 +1,7 @@
 {
 	"name": "webrouse/n-asset-macro",
 	"license": "MIT",
-	"description": "Asset macro for Latte and Nette Framework useful for assets cache busting (with gulp, webpack, grunt, etc.)",
+	"description": "Asset macro for Latte and Nette Framework useful for assets cache busting (with gulp, webpack, etc.)",
 	"type": "library",
 	"authors": [
 		{
