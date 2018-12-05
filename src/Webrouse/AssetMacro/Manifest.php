@@ -6,6 +6,7 @@ namespace Webrouse\AssetMacro;
 
 use Nette\Utils\Json;
 use Nette\Utils\JsonException;
+use Nette\Utils\Strings;
 use Webrouse\AssetMacro\Exceptions\AssetNotFoundException;
 use Webrouse\AssetMacro\Exceptions\ManifestJsonException;
 use Webrouse\AssetMacro\Exceptions\RevisionNotFound;
@@ -44,6 +45,33 @@ class Manifest
 			$value = ltrim((string) $value, '/');
 			$this->data[$key] = $value;
 		}
+	}
+
+
+	/**
+	 * @param null|string|callable $filter regexp pattern or callable
+	 * @param bool $needed
+	 * @return array|Asset[]
+	 */
+	public function getAll($filter = null, $needed = true): array
+	{
+		assert($filter === null || is_string($filter) || is_callable($filter));
+
+		$out = [];
+		foreach (array_keys($this->data) as $asset) {
+			if (is_string($filter)) {
+				if (!Strings::match($asset, $filter)) {
+					continue;
+				}
+			} elseif (is_callable($filter)) {
+				if (!$filter($asset)) {
+					continue;
+				}
+			}
+			$out[$asset] = $this->getAsset($asset, $needed);
+		}
+
+		return $out;
 	}
 
 
