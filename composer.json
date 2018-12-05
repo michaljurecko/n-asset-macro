@@ -24,7 +24,7 @@
 		"mockery/mockery": "^1.2.0",
 		"nette/coding-standard": ">=2.0",
 		"phpstan/phpstan-nette": ">=0.9",
-		"tracy/tracy": "^3.0@dev"
+		"tracy/tracy": ">=2.5"
 	},
 	"autoload": {
 		"psr-0": {

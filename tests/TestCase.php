@@ -24,7 +24,7 @@ class TestCase extends TesterTestCase
 
 		/** @var IRequest|Mock $httpRequest */
 		$httpRequest = Mockery::mock(IRequest::class);
-		$httpRequest->shouldReceive('getUrl')->andReturn(new UrlScript('http://www.example.com/base/path/index.php'));
+		$httpRequest->shouldReceive('getUrl')->andReturn($this->getFakeUrl());
 
 		$config = new Config(array_merge(Extension::DEFAULTS, [
 			'cache' => false,
@@ -38,6 +38,15 @@ class TestCase extends TesterTestCase
 		$latte->addProvider(AssetMacro::MANIFEST_PROVIDER, $service);
 
 		return $latte;
+	}
+
+
+	protected function getFakeUrl(): UrlScript
+	{
+		// Compatible with Nette 2.4 and 3.0
+		$url = new UrlScript('http://www.example.com/base/path/index.php');
+		$url->setScriptPath('/base/path/index.php');
+		return $url;
 	}
 
 
