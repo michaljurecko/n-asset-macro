@@ -36,11 +36,9 @@ script:
       fi
     # Examples - tests
     - bash shunit2 tests/ExamplesTests/gulp_tests.sh
-    - bash shunit2 tests/ExamplesTests/grunt_tests.sh
     - bash shunit2 tests/ExamplesTests/webpack_tests.sh
     # Examples - npm-check-updates
     - ncu --packageFileDir --packageFile "${TRAVIS_BUILD_DIR}/examples/gulp/package.json"
-    - ncu --packageFileDir --packageFile "${TRAVIS_BUILD_DIR}/examples/grunt/package.json"
     - ncu --packageFileDir --packageFile "${TRAVIS_BUILD_DIR}/examples/webpack/package.json"
 
 after_failure:
@@ -69,7 +67,7 @@ before_script:
     - nvm install node
     - npm install -g npm@3
     - npm config set loglevel error
-    - npm install -s -q -g gulp grunt-cli webpack webpack-cli npm-check-updates
+    - npm install -s -q -g gulp webpack webpack-cli npm-check-updates
     # Code coverage arguments
     - if [ "$coverage" == "on" ]; then coverageArgs="-p phpdbg --coverage ./coverage.xml --coverage-src ./src"; fi
 
