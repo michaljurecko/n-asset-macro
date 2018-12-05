@@ -9,7 +9,6 @@ use Nette\Bridges\ApplicationLatte\ILatteFactory;
 use Nette\Configurator;
 use Nette\DI\Container;
 use Nette\Http\IRequest;
-use Nette\Http\UrlScript;
 use Nette\Utils\Random;
 use Tester;
 use Tester\Assert;
@@ -198,7 +197,7 @@ assetMacro:
 		$httpRequest = $container->getService('http.request');
 		/** @var IRequest|Mock $httpRequestMock */
 		$httpRequestMock = Mockery::mock($httpRequest)->makePartial();
-		$httpRequestMock->shouldReceive('getUrl')->andReturn(new UrlScript('http://www.example.com/base/path/index.php'));
+		$httpRequestMock->shouldReceive('getUrl')->andReturn($this->getFakeUrl());
 		$container->removeService('http.request');
 		$container->addService('http.request', $httpRequestMock);
 
