@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Webrouse\AssetMacro;
 
 use Latte;
+use Nette\Utils\Strings;
 use Tester\Assert;
 
 include '../bootstrap.php';
@@ -447,9 +448,57 @@ class PathsTest extends TestCase
 	}
 
 
-	protected function createLatte(array $config = []): Latte\Engine
+	public function testManifestGetAll(): void
 	{
-		return parent::createLatte(array_merge([
+		$service = $this->createService();
+		$assets = $service->getManifest()->getAll();
+		Assert::same([
+			'assets/compiled/main.css' => 'http://www.example.com/base/path/fixtures/assets/compiled/main.b82916016edc7.css',
+			'assets/compiled/main.js' => 'http://www.example.com/base/path/fixtures/assets/compiled/main.fc730c89c4255.js',
+			'assets/compiled/other.js' => 'http://www.example.com/base/path/fixtures/assets/compiled/other.8h9hfj5vvh4jf.js',
+			'assets/compiled/escape.js' => '__null__',
+		], array_map(function (?Asset $asset) use ($service) {
+			return $asset ? $service->formatOutput($asset, '%url%', true) : '__null__';
+		}, $assets));
+	}
+
+
+	public function testManifestGetAllFilterGlob(): void
+	{
+		$service = $this->createService();
+		$assets1 = $service->getManifest()->getAll('/.*\.css$/');
+		Assert::same([
+			'assets/compiled/main.css' => 'http://www.example.com/base/path/fixtures/assets/compiled/main.b82916016edc7.css',
+		], array_map(function (?Asset $asset) use ($service) {
+			return $asset ? $service->formatOutput($asset, '%url%', true) : '__null__';
+		}, $assets1));
+
+		$assets2 = $service->getManifest()->getAll('/.*\.js/');
+		Assert::same([
+			'assets/compiled/main.js' => 'http://www.example.com/base/path/fixtures/assets/compiled/main.fc730c89c4255.js',
+			'assets/compiled/other.js' => 'http://www.example.com/base/path/fixtures/assets/compiled/other.8h9hfj5vvh4jf.js',
+			'assets/compiled/escape.js' => '__null__',
+		], array_map(function (?Asset $asset) use ($service) {
+			return $asset ? $service->formatOutput($asset, '%url%', true) : '__null__';
+		}, $assets2));
+	}
+
+
+	public function testManifestGetAllFilterCallback(): void
+	{
+		$service = $this->createService();
+		$assets = $service->getManifest()->getAll(function (string $asset) {return Strings::contains($asset, 'other.js');});
+		Assert::same([
+			'assets/compiled/other.js' => 'http://www.example.com/base/path/fixtures/assets/compiled/other.8h9hfj5vvh4jf.js',
+		], array_map(function (?Asset $asset) use ($service) {
+			return $asset ? $service->formatOutput($asset, '%url%', true) : '__null__';
+		}, $assets));
+	}
+
+
+	protected function createService(array $config = []): ManifestService
+	{
+		return parent::createService(array_merge([
 			'missingAsset' => 'ignore',
 			'missingManifest' => 'ignore',
 			'missingRevision' => 'ignore',

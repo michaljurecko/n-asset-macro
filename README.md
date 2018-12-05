@@ -173,20 +173,16 @@ Generated output:
 
 Output URL type - relative or absolute - is defined by fourth macro parameter or using `absolute` key (default `false`).
 
-If `absolute => true` is set or asset path is prefixed with `//` eg. (`//assets/js/main.js`), the absolute URL (`$baseUrl` is used) will be generated instead of a relative URL (`$basePath` is used).
+If `absolute => true` or asset path is prefixed with `//` eg. (`//assets/js/main.js`), the absolute URL will be generated instead of a relative URL.
 
 ```latte
-{asset 'js/vendor.js'}
-{asset '//js/vendor.js'}
-{asset 'js/vendor.js', absolute => true}
-{asset 'js/vendor.js', absolute => false}
+{asset 'js/vendor.js'}      {* equal to {asset 'js/vendor.js', absolute => false} *}
+{asset '//js/vendor.js'}    {* equal to {asset 'js/vendor.js', absolute => true}  *}
 
 ```
 
 Generated output:
 ```html
-<script src="/base/path/js/vendor.d67fbce193.js"></script>
-<script src="http://www.example.com/base/path/js/vendor.d67fbce193.js"></script>
 <script src="/base/path/js/vendor.d67fbce193.js"></script>
 <script src="http://www.example.com/base/path/js/vendor.d67fbce193.js"></script>
 
@@ -217,6 +213,10 @@ assetMacro:
         - versions.json
         - manifest.json
         - rev-manifest.json
+    # Absolute path to assets dir
+    assetsPath: %wwwDir%/ # %wwwDir%/assets
+    # Public path to "assetsPath"
+    publicPath: / # /assets
     # Action if missing asset file: exception, notice, or ignore
     missingAsset: notice
     # Action if missing manifest file: exception, notice, or ignore
@@ -225,6 +225,16 @@ assetMacro:
     missingRevision: notice
     # Default format, can be changed in macro using "format => ..."
     format: '%%url%%' # character % is escaped by %%
+```
+
+## `ManifestService`
+
+It is also possible to access the manifest from your code using `Webrouse\AssetMacro\ManifestService` (from DI container).
+
+```php
+/** @var ManifestService $manifestService */
+$cssAssets = $manifestService->getManifest()->getAll('/.*\.css$/');
+
 ```
 
 ## Examples

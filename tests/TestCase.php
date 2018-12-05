@@ -22,22 +22,26 @@ class TestCase extends TesterTestCase
 			AssetMacro::install($engine->getCompiler());
 		};
 
+		$latte->addProvider(AssetMacro::MANIFEST_PROVIDER, $this->createService($config));
+
+		return $latte;
+	}
+
+
+	protected function createService(array $config = []): ManifestService
+	{
 		/** @var IRequest|Mock $httpRequest */
 		$httpRequest = Mockery::mock(IRequest::class);
 		$httpRequest->shouldReceive('getUrl')->andReturn($this->getFakeUrl());
 
-		$config = new Config(array_merge(Extension::DEFAULTS, [
+		$configService = new Config(array_merge(Extension::DEFAULTS, [
 			'cache' => false,
 			'assetsPath' => WWW_FIXTURES_DIR,
 			'publicPath' => '/fixtures',
 			'format' => '%url%',
 		], $config));
 
-		$service = new ManifestService($config, $httpRequest);
-
-		$latte->addProvider(AssetMacro::MANIFEST_PROVIDER, $service);
-
-		return $latte;
+		return new ManifestService($configService, $httpRequest);
 	}
 
 
