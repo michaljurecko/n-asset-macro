@@ -41,7 +41,9 @@ class TestCase extends TesterTestCase
 			'format' => '%url%',
 		], $config));
 
-		return new ManifestService($configService, $httpRequest);
+		$formatter = new Formatter($configService, $httpRequest);
+
+		return new ManifestService($configService, $formatter);
 	}
 
 

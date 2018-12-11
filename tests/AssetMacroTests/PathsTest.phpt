@@ -58,7 +58,7 @@ class PathsTest extends TestCase
 	{
 		$latte = $this->createLatte();
 		Assert::same(
-			'',
+			'/base/path/fixtures/assets/compiled/invalid.js?v=unknown',
 			$latte->renderToString('{asset "assets/compiled/invalid.js", "%url%", false}')
 		);
 	}
@@ -71,7 +71,7 @@ class PathsTest extends TestCase
 	{
 		$latte = $this->createLatte();
 		Assert::same(
-			'',
+			'/base/path/fixtures/invalid.js?v=unknown',
 			$latte->renderToString('{asset "invalid.js", need => FALSE}')
 		);
 	}
@@ -377,7 +377,7 @@ class PathsTest extends TestCase
 
 		error_reporting(E_ERROR | E_PARSE);
 		Assert::same(
-			'',
+			'/base/path/fixtures/assets/compiled/invalid.js?v=unknown',
 			$latte->renderToString($template)
 		);
 	}
@@ -390,7 +390,7 @@ class PathsTest extends TestCase
 	{
 		$latte = $this->createLatte(['missingAsset' => 'ignore']);
 		Assert::same(
-			'',
+			'/base/path/fixtures/assets/compiled/invalid.js?v=unknown',
 			$latte->renderToString('{asset "assets/compiled/invalid.js"}')
 		);
 	}
@@ -456,9 +456,9 @@ class PathsTest extends TestCase
 			'assets/compiled/main.css' => 'http://www.example.com/base/path/fixtures/assets/compiled/main.b82916016edc7.css',
 			'assets/compiled/main.js' => 'http://www.example.com/base/path/fixtures/assets/compiled/main.fc730c89c4255.js',
 			'assets/compiled/other.js' => 'http://www.example.com/base/path/fixtures/assets/compiled/other.8h9hfj5vvh4jf.js',
-			'assets/compiled/escape.js' => '__null__',
+			'assets/compiled/escape.js' => 'http://www.example.com/base/path/fixtures/assets/compiled/main."escape".js',
 		], array_map(function (?Asset $asset) use ($service) {
-			return $asset ? $service->formatOutput($asset, '%url%', true) : '__null__';
+			return $asset ? $service->getFormatter()->format($asset, '%url%', true) : '__null__';
 		}, $assets));
 	}
 
@@ -470,16 +470,16 @@ class PathsTest extends TestCase
 		Assert::same([
 			'assets/compiled/main.css' => 'http://www.example.com/base/path/fixtures/assets/compiled/main.b82916016edc7.css',
 		], array_map(function (?Asset $asset) use ($service) {
-			return $asset ? $service->formatOutput($asset, '%url%', true) : '__null__';
+			return $asset ? $service->getFormatter()->format($asset, '%url%', true) : '__null__';
 		}, $assets1));
 
 		$assets2 = $service->getManifest()->getAll('/.*\.js/');
 		Assert::same([
 			'assets/compiled/main.js' => 'http://www.example.com/base/path/fixtures/assets/compiled/main.fc730c89c4255.js',
 			'assets/compiled/other.js' => 'http://www.example.com/base/path/fixtures/assets/compiled/other.8h9hfj5vvh4jf.js',
-			'assets/compiled/escape.js' => '__null__',
+			'assets/compiled/escape.js' => 'http://www.example.com/base/path/fixtures/assets/compiled/main."escape".js',
 		], array_map(function (?Asset $asset) use ($service) {
-			return $asset ? $service->formatOutput($asset, '%url%', true) : '__null__';
+			return $asset ? $service->getFormatter()->format($asset, '%url%', true) : '__null__';
 		}, $assets2));
 	}
 
@@ -491,7 +491,7 @@ class PathsTest extends TestCase
 		Assert::same([
 			'assets/compiled/other.js' => 'http://www.example.com/base/path/fixtures/assets/compiled/other.8h9hfj5vvh4jf.js',
 		], array_map(function (?Asset $asset) use ($service) {
-			return $asset ? $service->formatOutput($asset, '%url%', true) : '__null__';
+			return $asset ? $service->getFormatter()->format($asset, '%url%', true) : '__null__';
 		}, $assets));
 	}
 

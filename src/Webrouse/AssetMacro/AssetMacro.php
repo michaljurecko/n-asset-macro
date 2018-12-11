@@ -72,11 +72,10 @@ class AssetMacro extends MacroSet
 	}
 
 
-	public static function generateOutput(string $asset, array $args, Config $config, ManifestService $manifestService): string
+	public static function generateOutput(string $asset, array $args, Config $config, ManifestService $manifestService): ?string
 	{
 		[$format, $needed, $absolute] = self::processArguments($asset, $args, $config);
-		$asset = $manifestService->getAsset($asset, $needed);
-		return $asset ? $manifestService->formatOutput($asset, $format, $absolute) : '';
+		return $manifestService->format($asset, $needed, $format, $absolute);
 	}
 
 

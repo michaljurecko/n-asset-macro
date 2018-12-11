@@ -11,6 +11,7 @@ use Nette\Utils\Validators;
 use Webrouse\AssetMacro\AssetMacro;
 use Webrouse\AssetMacro\Config;
 use Webrouse\AssetMacro\Exceptions\UnexpectedValueException;
+use Webrouse\AssetMacro\Formatter;
 use Webrouse\AssetMacro\ManifestService;
 use Webrouse\AssetMacro\Utils;
 
@@ -71,10 +72,15 @@ class Extension extends CompilerExtension
 			->addDefinition($this->prefix('config'))
 			->setFactory(Config::class, [$config]);
 
+		// Formatter
+		$builder
+			->addDefinition($this->prefix('formatter'))
+			->setFactory(Formatter::class, [$this->prefix('@config')]);
+
 		// Manifest service
 		$builder
 			->addDefinition($this->prefix('manifest'))
-			->setFactory(ManifestService::class, [$this->prefix('@config')]);
+			->setFactory(ManifestService::class, [$this->prefix('@config'), $this->prefix('@formatter')]);
 	}
 
 

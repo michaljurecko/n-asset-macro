@@ -152,7 +152,7 @@ These settings can by overrided by third macro parameter or using `needed` key (
 
 Argument `needed => false` will cause the missing file or the missing revision record will be ignored.
 
-Empty string will be result for missing asset. Missing version will be replaced with `unknown` string.
+Missing version will be replaced with `unknown` string.
 
 **Example of `needed` parameter**
  * `absent.js` file doesn't exist.

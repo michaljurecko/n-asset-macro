@@ -75,7 +75,7 @@ class Manifest
 	}
 
 
-	public function getAsset(string $path, bool $needed = true): ?Asset
+	public function getAsset(string $path, bool $needed = true): Asset
 	{
 		$revision = self::getRevision($path, $needed);
 
@@ -85,8 +85,6 @@ class Manifest
 				$this->config->getMissingAssetPolicy(),
 				$needed
 			);
-
-			return null;
 		}
 
 		return new Asset($revision);
