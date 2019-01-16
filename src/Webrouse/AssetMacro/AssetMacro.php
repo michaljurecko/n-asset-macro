@@ -44,17 +44,18 @@ class AssetMacro extends MacroSet
 			'(' . self::class . '::getOutput(' .
 			'%node.word, ' .
 			'%node.array, ' .
+			'$baseUrl ?? null, ' .
 			'$this->global->' . self::MANIFEST_PROVIDER . ', ' .
 			'$this->global->cacheStorage ?? null))');
 	}
 
 
-	public static function getOutput(string $asset, array $args, ManifestService $manifestService, IStorage $storage = null): string
+	public static function getOutput(string $asset, array $args, ?string $baseUrl, ManifestService $manifestService, IStorage $storage = null): string
 	{
 		$config = $manifestService->getConfig();
 
 		// Cache
-		$cacheKey = md5(implode(';', [$asset, serialize($args), $config->getHash()]));
+		$cacheKey = md5(implode(';', [$asset, serialize($args), $config->getHash(), $baseUrl ?? '']));
 		$cache = ($config->isCacheEnabled() && $storage) ? new Cache($storage, 'Webrouse.AssetMacro') : null;
 
 		// Load cached value

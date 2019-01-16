@@ -23,14 +23,14 @@ class CompileTest extends TestCase
 		// main.js
 		$template1 = '{asset "assets/compiled/main.js"}';
 		Assert::contains(
-			AssetMacro::class . '::getOutput("assets/compiled/main.js", [], $this->global->' . AssetMacro::MANIFEST_PROVIDER . ', $this->global->cacheStorage ?? null)',
+			AssetMacro::class . '::getOutput("assets/compiled/main.js", [], $baseUrl ?? null, $this->global->' . AssetMacro::MANIFEST_PROVIDER . ', $this->global->cacheStorage ?? null)',
 			$latte->compile($template1)
 		);
 
 		// assets/compiled/main.css
 		$template2 = '{asset "assets/compiled/main.css"}';
 		Assert::contains(
-			AssetMacro::class . '::getOutput("assets/compiled/main.css", [], $this->global->' . AssetMacro::MANIFEST_PROVIDER . ', $this->global->cacheStorage ?? null)',
+			AssetMacro::class . '::getOutput("assets/compiled/main.css", [], $baseUrl ?? null, $this->global->' . AssetMacro::MANIFEST_PROVIDER . ', $this->global->cacheStorage ?? null)',
 			$latte->compile($template2)
 		);
 	}
